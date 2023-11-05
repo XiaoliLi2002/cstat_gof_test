@@ -1,0 +1,40 @@
+Sherpa is a python package that can be used to fit the data, and also
+read in an use the .arf and .rmf files
+
+No Windows support
+
+Installation: 
+Download the GitHub version (4.16), which is the latest. 
+You could also use "pip install sherpa", but it pulls up the
+previous version (4.15.1) which lacks one of the commands at the momement.
+
+GitHub installation:
+Download the package from https://github.com/sherpa/sherpa
+Extract the .zip file to your computer.
+From the main page of the source tree that you download, say
+> pip install .
+to install the package. That's it.
+
+Sherpa use and documentation:
+Two great documents to learn how to view the PHA responses (ARF and RMF) in Sherpa:
+
+1. https://sherpa.readthedocs.io/en/latest/ViewingPHAResponses.html
+
+I used this one to make a puthon script to read and use our responses, pgSherpa.py
+The main commands are
+
+ARF:
+arf = io.read_arf("pg1116-newobs_new_leg_abs1.arf")
+aplot=ARFPlot()
+aplot.prepare(arf)
+and aplot.xlo and aplot.y have the enery and effective area
+
+RMF:
+rmf = io.read_rmf("pg1116-newobs_new_leg_abs1.rmf")
+matinfo = instrument.rmf_to_matrix(rmf)
+matinfo has the response matrix
+
+2. https://github.com/DougBurke/sherpa-standalone-notebooks/blob/main/A%20deep%20dive%20into%20responses.ipynb
+
+This is Doug's in-depth python notebook, with overlap with the previous one. 
+Doug is the go-to person for questions of responses in Sherpa. 

@@ -1,0 +1,60 @@
+0: hrc_3145-0_combo_leg_abs1.pha and hrc_3145-0_combo_leg_abs1_bkg.pha
+Exposure: 4404.625 and 4404.576
+Cstat: 375.866 (320)
+1: hrc_3145-1_combo_leg_abs1.pha and hrc_3145-1_combo_leg_abs1_bkg.pha
+Exposure: 4404.553 and 4404.576
+Cstat: 359.822 (320)
+2: hrc_3145-2_combo_leg_abs1.pha and hrc_3145-2_combo_leg_abs1_bkg.pha
+Exposure: 4404.583 and 4404.576
+Cstat: 355.144 (320)
+3: hrc_3145-3_combo_leg_abs1.pha and hrc_3145-3_combo_leg_abs1_bkg.pha
+Exposure: 4404.597 and 4404.576
+Cstat: 343.187 (320)
+4: hrc_3145-4_combo_leg_abs1.pha and hrc_3145-4_combo_leg_abs1_bkg.pha
+Exposure: 4404.583 and 4404.576
+Cstat: 345.472 (320)
+5: hrc_3145-5_combo_leg_abs1.pha and hrc_3145-5_combo_leg_abs1_bkg.pha
+Exposure: 4403.709 and 4403.582
+Cstat: 350.672 (320)
+6: hrc_3145-6_combo_leg_abs1.pha and hrc_3145-6_combo_leg_abs1_bkg.pha
+Exposure: 4404.633 and 4404.576
+Cstat: 384.011 (320)
+7: hrc_3145-7_combo_leg_abs1.pha and hrc_3145-7_combo_leg_abs1_bkg.pha
+Exposure: 4404.578 and 4404.576
+Cstat: 344.739 (320)
+8: hrc_3145-8_combo_leg_abs1.pha and hrc_3145-8_combo_leg_abs1_bkg.pha
+Exposure: 4404.604 and 4404.576
+Cstat: 322.895 (320)
+9: hrc_3145-9_combo_leg_abs1.pha and hrc_3145-9_combo_leg_abs1_bkg.pha
+Exposure: 4404.597 and 4404.576
+Cstat: 333.904 (320)
+10: hrc_3145-10_combo_leg_abs1.pha and hrc_3145-10_combo_leg_abs1_bkg.pha
+Exposure: 4404.630 and 4404.576
+Cstat: 334.480 (320)
+11: hrc_3145-11_combo_leg_abs1.pha and hrc_3145-11_combo_leg_abs1_bkg.pha
+Exposure: 4359.823 and 4359.745
+Cstat: 341.898 (320)
+12: hrc_3145-12_combo_leg_abs1.pha and hrc_3145-12_combo_leg_abs1_bkg.pha
+Exposure: 4404.583 and 4404.576
+Cstat: 345.626 (320)
+13: hrc_3145-13_combo_leg_abs1.pha and hrc_3145-13_combo_leg_abs1_bkg.pha
+Exposure: 4404.531 and 4404.576
+Cstat: 388.282 (320)
+14: hrc_3145-14_combo_leg_abs1.pha and hrc_3145-14_combo_leg_abs1_bkg.pha
+Exposure: 4404.485 and 4404.576
+Cstat: 338.878 (320)
+15: hrc_3145-15_combo_leg_abs1.pha and hrc_3145-15_combo_leg_abs1_bkg.pha
+Exposure: 4404.500 and 4404.576
+Cstat: 336.595 (320)
+16: hrc_3145-16_combo_leg_abs1.pha and hrc_3145-16_combo_leg_abs1_bkg.pha
+Exposure: 4404.494 and 4404.576
+Cstat: 332.968 (320)
+17: hrc_3145-17_combo_leg_abs1.pha and hrc_3145-17_combo_leg_abs1_bkg.pha
+Exposure: 4404.525 and 4404.576
+Cstat: 338.316 (320)
+18: hrc_3145-18_combo_leg_abs1.pha and hrc_3145-18_combo_leg_abs1_bkg.pha
+Exposure: 4404.509 and 4404.576
+Cstat: 340.857 (320)
+19: hrc_3145-19_combo_leg_abs1.pha and hrc_3145-19_combo_leg_abs1_bkg.pha
+Exposure: 4404.113 and 4404.139
+Cstat: 323.873 (320)
