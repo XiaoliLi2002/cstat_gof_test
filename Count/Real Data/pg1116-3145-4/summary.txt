@@ -1,0 +1,12 @@
+0: hrc_3145-0_combo_leg_abs1.pha and hrc_3145-0_combo_leg_abs1_bkg.pha
+Exposure: 22022.939 and 22022.879
+Cstat: 352.491 (320)
+1: hrc_3145-1_combo_leg_abs1.pha and hrc_3145-1_combo_leg_abs1_bkg.pha
+Exposure: 22022.121 and 22021.885
+Cstat: 351.776 (320)
+2: hrc_3145-2_combo_leg_abs1.pha and hrc_3145-2_combo_leg_abs1_bkg.pha
+Exposure: 21978.053 and 21978.047
+Cstat: 374.474 (320)
+3: hrc_3145-3_combo_leg_abs1.pha and hrc_3145-3_combo_leg_abs1_bkg.pha
+Exposure: 22022.143 and 22022.441
+Cstat: 345.125 (320)
