@@ -317,13 +317,77 @@ def tridiag_mat(n,shift,value):
 def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 
     for l in range(iters):
-        plt.subplot(2, 1, 1)
+        plt.subplot(2, 2, 1)
+        I = np.eye(n)
+        C = [0 for x in range(B)]
+        C2 = [0 for x in range(B)]
+        s = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
+        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
+
+        np.random.seed(seed)
+        for i in range(B):
+            print(i)
+            x = poisson_data(s)
+            if x == [0 for i in range(n)]:
+                continue
+            xopt = opt.minimize(LLF, beta, args=(x, ARE, I, Energy, BACK, left, right),
+                                bounds=([[1e-5, np.inf], [-10, 10]]))
+            theta_hat = xopt['x']
+            r = RMF_s_powerlaw(ARE, I, Energy, theta_hat, BACK, left, right)
+            for j in range(n):
+                if x[j] == 0:
+                    C[i] += r[j]
+                else:
+                    C[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
+            C[i] = 2 * C[i]  # 2 is here
+
+        np.random.seed(seed)
+        for i in range(B):
+            print(i)
+            x = poisson_data(s2)
+            if x == [0 for i in range(n)]:
+                continue
+            xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
+                                bounds=([[1e-5, np.inf], [-10, 10]]))
+            theta_hat = xopt['x']
+            r = RMF_s_powerlaw(ARE, I, Energy, theta_hat, BACK, left, right)
+            for j in range(n):
+                if x[j] == 0:
+                    C2[i] += r[j]
+                else:
+                    C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
+            C2[i] = 2 * C2[i]  # 2 is here
+
+        bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
+                           50)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.xlabel('C-stat', fontsize=18)
+        plt.ylabel('Density', fontsize=18)
+
+        x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
+        y = normfun(x, statistics.mean(C), statistics.stdev(C))
+        plt.plot(x, y, color='red', label='Alg.2b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
+
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
+        plt.plot(x, y, color='green', label='Alg.2b,noRMF')
+
+        plt.legend(fontsize=15)
+        plt.grid(linestyle='--', alpha=0.5)
+        # plt.show()
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=I$' % (n, int(beta[0] / n), beta[1]), fontsize=18)
+
+        plt.subplot(2, 2, 2)
         I = np.eye(n)
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, RMF_test1, Energy, beta, BACK, left, right)
         s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
+        np.random.seed(seed)
         for i in range(B):
             print(i)
             x = poisson_data(s)
@@ -340,6 +404,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C[i] = 2 * C[i]  # 2 is here
 
+        np.random.seed(seed)
         for i in range(B):
             print(i)
             x = poisson_data(s2)
@@ -356,7 +421,8 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
-        plt.hist(C, bins=20, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF')
+        bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),50)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -364,7 +430,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins=20, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF')
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2), 0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
@@ -373,15 +439,16 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
-        plt.title(r'$n=100,\frac{K}{n}=1,\alpha=1,R=D$', fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=D$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
 
-        plt.subplot(2, 1, 2)
+        plt.subplot(2, 2, 3)
         I=np.eye(n)
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, RMF_test2, Energy, beta, BACK, left, right)
         s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
+        np.random.seed(seed)
         for i in range(B):
             print(i)
             x = poisson_data(s)
@@ -398,6 +465,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C[i] = 2 * C[i]  # 2 is here
 
+        np.random.seed(seed)
         for i in range(B):
             print(i)
             x = poisson_data(s2)
@@ -414,7 +482,9 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
-        plt.hist(C, bins=20, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF')
+        bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
+                           50)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -422,7 +492,69 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins=20, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF')
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
+
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
+        plt.plot(x, y, color='green', label='Alg.2b,noRMF')
+
+        plt.legend(fontsize=15)
+        plt.grid(linestyle='--', alpha=0.5)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=\frac{(11^\top+nI)}{2n}$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
+
+        plt.subplot(2, 2, 4)
+        I = np.eye(n)
+        C = [0 for x in range(B)]
+        C2 = [0 for x in range(B)]
+        s = RMF_s_powerlaw(ARE, RMF_test3, Energy, beta, BACK, left, right)
+        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
+
+        np.random.seed(seed)
+        for i in range(B):
+            print(i)
+            x = poisson_data(s)
+            if x == [0 for i in range(n)]:
+                continue
+            xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF_test3, Energy, BACK, left, right),
+                                bounds=([[1e-5, np.inf], [-10, 10]]))
+            theta_hat = xopt['x']
+            r = RMF_s_powerlaw(ARE, RMF_test3, Energy, theta_hat, BACK, left, right)
+            for j in range(n):
+                if x[j] == 0:
+                    C[i] += r[j]
+                else:
+                    C[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
+            C[i] = 2 * C[i]  # 2 is here
+
+        np.random.seed(seed)
+        for i in range(B):
+            print(i)
+            x = poisson_data(s2)
+            if x == [0 for i in range(n)]:
+                continue
+            xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
+                                bounds=([[1e-5, np.inf], [-10, 10]]))
+            theta_hat = xopt['x']
+            r = RMF_s_powerlaw(ARE, I, Energy, theta_hat, BACK, left, right)
+            for j in range(n):
+                if x[j] == 0:
+                    C2[i] += r[j]
+                else:
+                    C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
+            C2[i] = 2 * C2[i]  # 2 is here
+
+        bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
+                           50)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.xlabel('C-stat', fontsize=18)
+        plt.ylabel('Density', fontsize=18)
+
+        x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
+        y = normfun(x, statistics.mean(C), statistics.stdev(C))
+        plt.plot(x, y, color='red', label='Alg.2b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
@@ -432,20 +564,26 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
-        plt.title(r'$n=100,\frac{K}{n}=1,\alpha=1,R=\frac{(11^\top+nI)}{2n}$', fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=11^\top$' % (n, int(beta[0] / n), beta[1]),
+                  fontsize=18)
+
+        plt.tight_layout()
         plt.savefig('RMFvsnoRMF.pdf')
 
 B=1000
-n_test=100
+n_test=25
 ARE_test=np.array([1 for i in range(n_test)])
 #RMF_test1=np.eye(n_test)
 RMF_test1=0.8*np.eye(n_test)+tridiag_mat(n_test,1,0.1)+tridiag_mat(n_test,1,0.1).T
 RMF_test1[0,0]+=0.1
 RMF_test1[n_test-1,n_test-1]+=0.1
 RMF_test2=np.mat([ [.5 for l in range(n_test) ] for k in range(n_test)])/n_test+0.5*np.eye(n_test)
+RMF_test3=np.mat(np.ones(n_test)).T@np.mat(np.ones(n_test))
 Energy_test=np.array([1.+i/n_test for i in range(n_test+1)])
 beta_test=np.array([1*n_test,1])
 #beta_test=np.array([2.,1])
 iters_test=1
+seed=42
+
 
 test(n_test,B,B,B,beta_test,iters_test,ARE_test,RMF_test2,Energy_test,BACK=0.1,left=0,right=0)
