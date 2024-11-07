@@ -4,12 +4,10 @@ import math
 import matplotlib.pyplot as plt
 import random
 import statistics
-from scipy.stats import poisson
-from scipy.stats import nbinom
+from scipy.stats import poisson, norm, chi2, gamma
 import scipy.optimize as opt
 import scipy
 import time
-np.set_printoptions(threshold=np.inf)
 plt.figure(dpi=300,figsize=(18,12))
 plt.rcParams['xtick.direction']='in'
 plt.rcParams['ytick.direction']='in'
@@ -25,7 +23,7 @@ def func(x,theta):  # Powerlaw model
 
 def RMF_s_powerlaw(ARE,RMF,Energy,theta,BACK=0.,left=0,right=0):
     n=len(ARE)-left-right
-    s=[0 for i in range(n)]
+    s=np.zeros(n)
     for i in range(n):
         s[i]=RMF_si_powerlaw(ARE,RMF,Energy,i,theta,BACK,left,right)
     return s
@@ -35,29 +33,21 @@ def normfun(x,mu,sigma):
     return pdf
 
 def poisson_data(mu):
-    arr=[0 for x in range(len(mu))]
-    for i in range(len(mu)):
-        arr[i]=np.random.poisson(mu[i])
-    return arr
+    return np.random.poisson(mu)
 
 def poisson_data_constant(mu,n):
     return poisson.rvs(mu=mu,size=n).tolist()
 
 def nb_data(r,mu):
-    arr = [0. for x in range(len(mu))]
-    prob=[0. for x in range(len(mu))]
-    for i in range(len(mu)):
-        prob[i]=r/(r+mu[i])
-    for i in range(len(mu)):
-        arr[i] = nbinom.rvs(r,prob[i],size=1)[0]
-    return arr
+    prob = r/(r+mu)
+    return np.random.negative_binomial(r,prob)
 
 def p_value_norm(x,mu,sigma):
     z=(x-mu)/sigma
-    return scipy.stats.norm.sf(z)
+    return norm.sf(z)
 
 def p_value_chi(x,df):
-    return scipy.stats.chi2.sf(x,df)
+    return chi2.sf(x,df)
 
 def generate_s_exp(n,theta1,theta2):
     arr=[0 for x in range(n)]
@@ -78,10 +68,10 @@ def generate_s_norm(n,mu,sigma):
     return np.random.normal(mu,sigma,n)
 
 def generate_s_gamma(n,alpha,beta):
-    return scipy.stats.gamma.rvs(alpha,loc=0,scale=1/beta,size=n)
+    return gamma.rvs(alpha,loc=0,scale=1/beta,size=n)
 
 def poisson_dis(mu,i):
-    return scipy.stats.poisson.pmf(i,mu)
+    return poisson.pmf(i,mu)
 
 def Sigma_diag(s,i,Q,n,max):
     x=kapa12(s[i],max)/s[i]**2
@@ -290,12 +280,8 @@ def design_mat(ARE,RMF,Energy,theta,left=0,right=0):
     return X
 
 def LLF(theta,x,ARE,RMF,Energy,BACK=0,left=0,right=0):
-    n = len(x)
     s = RMF_s_powerlaw(ARE,RMF,Energy,theta,BACK,left,right)
-    value=0
-    for i in range(n):
-        value+=x[i]*math.log(s[i],math.e)-s[i]
-    return -value
+    return sum(s-x*np.log(s))
 
 def LLF2(theta,x,ARE,RMF,Energy,BACK=0,left=0,right=0):
     n = len(x)
