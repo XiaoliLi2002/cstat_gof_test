@@ -81,7 +81,7 @@ def generate_s_gamma(n,alpha,beta):
     return scipy.stats.gamma.rvs(alpha,loc=0,scale=1/beta,size=n)
 
 def poisson_dis(mu,i):
-    return mu**i/math.factorial(i)*math.e**(-mu)
+    return scipy.stats.poisson.pmf(i,mu)
 
 def Sigma_diag(s,i,Q,n,max):
     x=kapa12(s[i],max)/s[i]**2
@@ -94,17 +94,15 @@ def expectation(s,n,X,I,max):
     #print(V)
     Q = X * (X.T * V * X) ** (-1) * X.T
     Sigma = np.diag([Sigma_diag(s, i, Q, n,max) for i in range(n)])
-    print(-0.5 * (X.T * V * X) ** (-1)*X.T * Sigma * X)
-    print(-0.5 * X.T * Sigma * X * (X.T * V * X) ** (-1))
     E = -0.5*np.trace(X.T * Sigma * X * (X.T * V * X) ** (-1))
-    print(E)
     for i in range(n):
         E += kapa1(s[i],max)
     print(E)
     return float(E)
 
 def Var(s,n,X,I,max):
-    p=len(I)
+    p=np.shape(X)[1]
+    print(p)
     V = np.diag([1/s[i] for i in range(n)])
     k_11 = np.mat([kapa11(s[i],max)/s[i] for i in range(n)]).T
     var = (-k_11.T * X * (X.T * V * X) ** (-1) * X.T * k_11)[0, 0]
@@ -358,9 +356,14 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = chi2fun(x, n - 2)
+        plt.plot(x, y, color='purple', label='Alg.1')
+
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF', alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -368,7 +371,19 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
+        m = (int)(max(s)) + 1
+        if m <= 20:
+            maximum = 40
+        else:
+            maximum = 2 * m
+        X = design_mat(ARE, I, Energy, beta, left, right)
+        mean = expectation(s, n, X, I, maximum)
+        std = math.sqrt(Var(s, n, X, I, maximum))
+        x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
+        y = normfun(x, mean, std)
+        plt.plot(x, y, color='cyan', marker='v',markevery=100, label='Alg.3b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF', alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
@@ -421,8 +436,13 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = chi2fun(x, n - 2)
+        plt.plot(x, y, color='purple', label='Alg.1')
+
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF',alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -430,13 +450,25 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
+        m = (int)(max(s)) + 1
+        if m <= 20:
+            maximum = 40
+        else:
+            maximum = 2 * m
+        X = design_mat(ARE, RMF_test1, Energy, beta, left, right)
+        mean = expectation(s, n, X, I, maximum)
+        std = math.sqrt(Var(s, n, X, I, maximum))
+        x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
+        y = normfun(x, mean, std)
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF',alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2), 0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
         plt.plot(x, y, color='green', label='Alg.2b,noRMF')
 
-        plt.legend(fontsize=15)
+ #       plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
         plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=D$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
@@ -482,9 +514,14 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = chi2fun(x, n - 2)
+        plt.plot(x, y, color='purple', label='Alg.1')
+
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF',alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -492,14 +529,26 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
+        m = (int)(max(s)) + 1
+        if m <= 20:
+            maximum = 40
+        else:
+            maximum = 2 * m
+        X = design_mat(ARE, RMF_test2, Energy, beta, left, right)
+        mean = expectation(s, n, X, I, maximum)
+        std = math.sqrt(Var(s, n, X, I, maximum))
+        x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
+        y = normfun(x, mean, std)
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF',alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
         plt.plot(x, y, color='green', label='Alg.2b,noRMF')
 
-        plt.legend(fontsize=15)
+#        plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=\frac{(11^\top+nI)}{2n}$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
 
@@ -544,9 +593,14 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                     C2[i] += r[j] - x[j] * np.log(r[j] / x[j]) - x[j]
             C2[i] = 2 * C2[i]  # 2 is here
 
+        x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
+                      0.05)
+        y = chi2fun(x, n - 2)
+        plt.plot(x, y, color='purple', label='Alg.1')
+
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF', alpha=0.5)
         plt.xlabel('C-stat', fontsize=18)
         plt.ylabel('Density', fontsize=18)
 
@@ -554,14 +608,27 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
         plt.plot(x, y, color='red', label='Alg.2b,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
+        m = (int)(max(s)) + 1
+        print(m)
+        if m <= 20:
+            maximum = 40
+        else:
+            maximum = 2 * m
+        X = design_mat(ARE, RMF_test3, Energy, beta, left, right)
+        mean = expectation(s, n, X, I, maximum)
+        std = math.sqrt(Var(s, n, X, I, maximum))
+        x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
+        y = normfun(x, mean, std)
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF', alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
         plt.plot(x, y, color='green', label='Alg.2b,noRMF')
 
-        plt.legend(fontsize=15)
+#        plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
         plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=11^\top$' % (n, int(beta[0] / n), beta[1]),
@@ -571,7 +638,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         plt.savefig('RMFvsnoRMF.pdf')
 
 B=1000
-n_test=25
+n_test=50
 ARE_test=np.array([1 for i in range(n_test)])
 #RMF_test1=np.eye(n_test)
 RMF_test1=0.8*np.eye(n_test)+tridiag_mat(n_test,1,0.1)+tridiag_mat(n_test,1,0.1).T
@@ -580,7 +647,7 @@ RMF_test1[n_test-1,n_test-1]+=0.1
 RMF_test2=np.mat([ [.5 for l in range(n_test) ] for k in range(n_test)])/n_test+0.5*np.eye(n_test)
 RMF_test3=np.mat(np.ones(n_test)).T@np.mat(np.ones(n_test))
 Energy_test=np.array([1.+i/n_test for i in range(n_test+1)])
-beta_test=np.array([1*n_test,1])
+beta_test=np.array([5*n_test,1])
 #beta_test=np.array([2.,1])
 iters_test=1
 seed=42
