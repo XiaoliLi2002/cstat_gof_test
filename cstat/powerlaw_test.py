@@ -29,8 +29,7 @@ def normfun(x,mu,sigma):
 
 
 def poisson_data(mu):
-    arr=np.array([np.random.poisson(mu[i]) for i in range(len(mu))])
-    return arr
+    return np.random.poisson(mu)
 
 
 #def poisson_data_constant(mu,n):
