@@ -287,10 +287,7 @@ def LLF2(theta,x,ARE,RMF,Energy,BACK=0,left=0,right=0):
     n = len(x)
     I=np.eye(n)
     s = RMF_s_powerlaw(ARE,I,Energy,theta,BACK,left,right)
-    value=0
-    for i in range(n):
-        value+=x[i]*math.log(s[i],math.e)-s[i]
-    return -value
+    return sum(s-x*np.log(s))
 
 def tridiag_mat(n,shift,value):
     X=np.eye(n)-np.eye(n)
