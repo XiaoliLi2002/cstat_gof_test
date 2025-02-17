@@ -86,11 +86,11 @@ def _grad_broken_powerlaw(theta, common_term, n, loc=0.5):
 def design_mat(beta,n,snull):
     p=len(beta)
     if snull=='constant':
-        return np.mat([1. for i in range(n)]).T
+        return np.asmatrix([1. for i in range(n)]).T
     elif snull=='powerlaw':
-        return np.mat([[1 for x in range(n)], [math.log(1+(x + 1) / n, math.e) for x in range(n)]]).T
+        return np.asmatrix([[1 for x in range(n)], [math.log(1+(x + 1) / n, math.e) for x in range(n)]]).T
     elif snull=='exp':
-        return np.mat([[1 for x in range(n)], [(x + 1) / n for x in range(n)]]).T
+        return np.asmatrix([[1 for x in range(n)], [(x + 1) / n for x in range(n)]]).T
     else:
         print("Design Matrix Fail!")
         return 0

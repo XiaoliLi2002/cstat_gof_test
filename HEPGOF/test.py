@@ -1,4 +1,5 @@
-from scipy.stats import poisson, norm, chi2, gamma, uniform
 import numpy as np
 
-print(np.random.poisson([1,10,100]))
+Y=np.zeros((3,3))+np.eye(3)-np.asmatrix(np.array([[1,0,0],[1,0,0],[0,0,1]]))
+print(Y)
+print(np.mean(Y,axis=0))

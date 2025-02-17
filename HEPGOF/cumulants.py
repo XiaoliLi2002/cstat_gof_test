@@ -1,44 +1,48 @@
-from utilities import math, poisson, np
+from utilities import poisson, np, pd
+from cumulants_high_accuracy import main_calculations
 
 
 def poisson_dis(mu,i):
     return poisson.pmf(i,mu=mu)
 
-def Sigma_diag(s,i,Q,n,max, epsilon):
-    x=kapa12(s[i],max, epsilon)
+def Sigma_diag(s,i,Q,n):
+    x=kapa12(s[i])
     for j in range(n):
-        x-=kapa11(s[j],max, epsilon)*Q[j,i]*kapa03(s[i],max, epsilon)
+        x-=kapa11(s[j])*Q[j,i]*kapa03(s[i])
     return x
 
-def expectation(s,n,X,I,max, epsilon):
+def expectation(s,n,X,I):
     V = np.diag([s[i] for i in range(n)])
     Q = X * (X.T * V * X) ** (-1) * X.T
-    Sigma = np.diag([Sigma_diag(s, i, Q, n,max, epsilon) for i in range(n)])
+    Sigma = np.diag([Sigma_diag(s, i, Q, n) for i in range(n)])
     E = -0.5*np.trace(X.T * Sigma * X * (X.T * V * X) ** (-1))
     for i in range(n):
-        E += kapa1(s[i],max, epsilon)
+        E += kapa1(s[i])
     return float(E)
 
-def uncon_expectation(s,n,X,I,max, epsilon):
+def uncon_expectation(s,n,X,I):
     E=0
     for j in range(n):
-        E += kapa1(s[j],max, epsilon)
+        E += kapa1(s[j])
     return float(E)
 
-def uncon_var(s,n,X,I,max, epsilon):
+def uncon_var(s,n,X,I):
     var=0
     for i in range(n):
-        var += kapa2(s[i],max, epsilon)
+        var += kapa2(s[i])
     return var
 
-def qtheta(s,n,X,I,max, epsilon):
+def qtheta(s,n,X,I):
     V = np.diag([s[i] for i in range(n)])
-    k_11 = np.mat([kapa11(s[i], max, epsilon) for i in range(n)]).T
+    k_11 = np.asmatrix([kapa11(s[i]) for i in range(n)]).T
     return (k_11.T * X * (X.T * V * X) ** (-1) * X.T * k_11)[0, 0]
 
-def Var(s,n,X,I,max, epsilon):
-    return uncon_var(s,n,X,I,max, epsilon)-qtheta(s,n,X,I,max, epsilon)
+def Var(s,n,X,I):
+    return uncon_var(s,n,X,I)-qtheta(s,n,X,I)
 
+
+#Calculate cumulants mathematically, cannot be used!!! Low numerical accuracy
+'''
 def kapa1(mu,max,epsilon):
     x = 0
     for k in range(max):
@@ -91,4 +95,54 @@ def kapa12(mu,max, epsilon):
     return x
 
 def kapa03(mu,max,epsilon):
+    return mu
+'''
+
+#Calculate cumulants using high-accuracy computation, grid-values and fitted formula
+df=pd.read_excel('poisson_cumulants_results.xlsx')
+def kapa1(mu):
+    if mu<-1e-5:
+        print('Warning: Invalid mu < 0!')
+        return 0
+    elif mu<0.005:
+        return main_calculations(mu)['k1']
+    elif mu>=20:
+        return 1+1/(6*mu)
+    else:
+        return df['k1'][int(mu*1e3)]
+
+def kapa2(mu):
+    if mu < -1e-5:
+        print('Warning: Invalid mu < 0!')
+        return 0
+    elif mu < 0.005:
+        return main_calculations(mu)['k2']
+    elif mu >= 20:
+        return 2*kapa1(mu)**2
+    else:
+        return df['k2'][int(mu * 1e3)]
+
+def kapa11(mu):
+    if mu < -1e-5:
+        print('Warning: Invalid mu < 0!')
+        return 0
+    elif mu < 0.005:
+        return main_calculations(mu)['k11']
+    elif mu >= 20:
+        return -1/(6*mu)
+    else:
+        return df['k11'][int(mu * 1e3)]
+
+def kapa12(mu):
+    if mu < -1e-5:
+        print('Warning: Invalid mu < 0!')
+        return 0
+    elif mu < 0.005:
+        return main_calculations(mu)['k12']
+    elif mu >= 20:
+        return 2*mu
+    else:
+        return df['k12'][int(mu * 1e3)]
+
+def kapa03(mu):
     return mu
