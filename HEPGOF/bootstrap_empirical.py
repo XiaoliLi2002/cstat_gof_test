@@ -12,4 +12,4 @@ def bootstrap_test(Cmin,beta,n,snull,B=1000, epsilon=1e-5):  #Alg.4a
         xopt = opt.minimize(LLF, beta, args=(x, snull), jac=LLF_grad, bounds=bound, method="L-BFGS-B")
         r = generate_s(n, xopt['x'], snull)
         C[i]=Cashstat(x,r)
-    return np.mean(C >= Cmin)
+    return np.mean(C >= Cmin), 2*min(np.mean(C <= Cmin), np.mean(C >= Cmin))

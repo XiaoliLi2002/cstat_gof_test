@@ -1,5 +1,7 @@
+from scipy.stats import norm
 import numpy as np
+import pandas as pd
 
-Y=np.zeros((3,3))+np.eye(3)-np.asmatrix(np.array([[1,0,0],[1,0,0],[0,0,1]]))
-print(Y)
-print(np.mean(Y,axis=0))
+
+names=['1','2','3']
+print(['0']+names)

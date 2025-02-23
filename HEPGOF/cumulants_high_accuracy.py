@@ -88,20 +88,20 @@ def main_calculations(mu):
 
 
 if __name__ == '__main__':
-    # 生成μ值序列 (0到10，步长0.001)
-    mu_values = [round(x * 0.001, 6) for x in range(20001)]  # 精确处理浮点数
-
-    # 预分配结果存储
-    results = []
-    total = len(mu_values)
-    start_time = time.time()
-
-
     # 进度打印函数
     def print_progress(current):
         elapsed = time.time() - start_time
         remaining = elapsed / (current + 1) * (total - current - 1)
         print(f"\r进度: {current + 1}/{total} [用时: {elapsed:.1f}s, 剩余: {remaining:.1f}s]", end="")
+
+
+    # 生成μ值序列 (0到10，步长0.0001)
+    mu_values = [round(x * 0.0001, 6) for x in range(100001)]  # 精确处理浮点数
+
+    # 预分配结果存储
+    results = []
+    total = len(mu_values)
+    start_time = time.time()
 
     # 设置高精度环境
     mp.dps = 20  # 20位精度已足够应对大多数科学计算需求
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     df = df[['mu', 'k1', 'k2', 'k11', 'k12']]
 
     # 导出到Excel
-    writer = pd.ExcelWriter('poisson_results.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter('poisson_results_0to10.xlsx', engine='xlsxwriter')
     df.to_excel(writer, index=False, float_format="%.10f")
 
     # 设置Excel格式
@@ -134,4 +134,46 @@ if __name__ == '__main__':
     worksheet.autofit()
 
     writer.close()
-    print("数据已成功导出到 poisson_results.xlsx")
+    print("数据已成功导出到 poisson_results_0to10.xlsx")
+
+
+    # 生成μ值序列 (10到100，步长0.01)
+    mu_values = [round( x * 0.01, 6) for x in range(10001)]  # 精确处理浮点数
+
+    # 预分配结果存储
+    results = []
+    total = len(mu_values)
+    start_time = time.time()
+
+    # 设置高精度环境
+    mp.dps = 20  # 20位精度已足够应对大多数科学计算需求
+    print("初始化高精度计算环境...")
+    # 主计算循环
+    print("开始批量计算...")
+    for idx, mu in enumerate(mu_values):
+        results.append({'mu': mu, **main_calculations(mu)})
+        if idx % 100 == 0:
+            print_progress(idx)
+
+    print("\n计算完成，开始导出数据...")
+
+    # 转换为DataFrame
+    df = pd.DataFrame(results)
+
+    # 优化列顺序
+    df = df[['mu', 'k1', 'k2', 'k11', 'k12']]
+
+    # 导出到Excel
+    writer = pd.ExcelWriter('poisson_results_0to100.xlsx', engine='xlsxwriter')
+    df.to_excel(writer, index=False, float_format="%.10f")
+
+    # 设置Excel格式
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#FFFF00'})
+    for col_num, value in enumerate(df.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    worksheet.autofit()
+
+    writer.close()
+    print("数据已成功导出到 poisson_results_0to100.xlsx")

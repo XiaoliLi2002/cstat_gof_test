@@ -99,17 +99,24 @@ def kapa03(mu,max,epsilon):
 '''
 
 #Calculate cumulants using high-accuracy computation, grid-values and fitted formula
-df=pd.read_excel('poisson_cumulants_results.xlsx')
+df1=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~10") # gap: 0.0001
+df2=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~20") # gap: 0.001
+df3=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~100") # gap: 0.01
+
 def kapa1(mu):
-    if mu<-1e-5:
+    if mu < -1e-5: # mu < 0
         print('Warning: Invalid mu < 0!')
         return 0
-    elif mu<0.005:
+    elif mu < 0.005:  # mu 0 ~ 0.005
         return main_calculations(mu)['k1']
-    elif mu>=20:
+    elif mu < 10.0: # mu 0.005 ~ 10, gap 0.0001
+        return df1['k1'][int(mu*1e4)]
+    elif mu < 20.0: # mu 10 ~ 20, gap 0.001
+        return df2['k1'][int(mu * 1e3)]
+    elif mu < 100.0: # mu 20 ~ 100, gap 0.01
+        return df3['k1'][int(mu * 1e2)]
+    else: # mu >= 100
         return 1+1/(6*mu)
-    else:
-        return df['k1'][int(mu*1e3)]
 
 def kapa2(mu):
     if mu < -1e-5:
@@ -117,10 +124,14 @@ def kapa2(mu):
         return 0
     elif mu < 0.005:
         return main_calculations(mu)['k2']
-    elif mu >= 20:
+    elif mu < 10.0: # mu 0.005 ~ 10, gap 0.0001
+        return df1['k2'][int(mu*1e4)]
+    elif mu < 20.0: # mu 10 ~ 20, gap 0.001
+        return df2['k2'][int(mu * 1e3)]
+    elif mu < 100.0: # mu 20 ~ 100, gap 0.01
+        return df3['k2'][int(mu * 1e2)]
+    else: # mu >= 100
         return 2*kapa1(mu)**2
-    else:
-        return df['k2'][int(mu * 1e3)]
 
 def kapa11(mu):
     if mu < -1e-5:
@@ -128,10 +139,15 @@ def kapa11(mu):
         return 0
     elif mu < 0.005:
         return main_calculations(mu)['k11']
-    elif mu >= 20:
+    elif mu < 10.0: # mu 0.005 ~ 10, gap 0.0001
+        return df1['k11'][int(mu*1e4)]
+    elif mu < 20.0: # mu 10 ~ 20, gap 0.001
+        return df2['k11'][int(mu * 1e3)]
+    elif mu < 100.0: # mu 20 ~ 100, gap 0.01
+        return df3['k11'][int(mu * 1e2)]
+    else: # mu >= 100
         return -1/(6*mu)
-    else:
-        return df['k11'][int(mu * 1e3)]
+
 
 def kapa12(mu):
     if mu < -1e-5:
@@ -139,10 +155,14 @@ def kapa12(mu):
         return 0
     elif mu < 0.005:
         return main_calculations(mu)['k12']
-    elif mu >= 20:
+    elif mu < 10.0: # mu 0.005 ~ 10, gap 0.0001
+        return df1['k12'][int(mu*1e4)]
+    elif mu < 20.0: # mu 10 ~ 20, gap 0.001
+        return df2['k12'][int(mu * 1e3)]
+    elif mu < 100.0: # mu 20 ~ 100, gap 0.01
+        return df3['k12'][int(mu * 1e2)]
+    else: # mu >= 100
         return 2*mu
-    else:
-        return df['k12'][int(mu * 1e3)]
 
 def kapa03(mu):
     return mu

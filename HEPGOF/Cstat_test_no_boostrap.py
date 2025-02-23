@@ -10,7 +10,8 @@ def single_test_no_bootstrap_pvalue(n,beta,strue,snull,iters,epsilon=1e-5,loc=0.
     s = generate_s_true(n, beta, strue, snull, loc=loc, strength=strength,
                         width=width)  # ground-truth. loc, strength & width are used for brokenpowerlaw, spectral line.
     print(s)
-    pvalues=np.zeros((iters,6))  # totally 6 methods, if strue=snull: Type I Error; if strue!=snull: Power
+    pvalues_onesided=np.zeros((iters,6))  # totally 6 methods, if strue=snull: Type I Error; if strue!=snull: Power
+    pvalues_twosided = np.zeros((iters, 6))  # totally 6 methods, if strue=snull: Type I Error; if strue!=snull: Power
     for i in range(int(iters)):  # repetition
         if i%1000==0:
             print(f"Iteration {i + 1}")
@@ -25,13 +26,13 @@ def single_test_no_bootstrap_pvalue(n,beta,strue,snull,iters,epsilon=1e-5,loc=0.
         Cmin = Cashstat(x, r)
 
         # start test
-        pvalues[i,0]=Wilks_Chi2_test.p_value_chi(Cmin, n - len(betahat))
-        pvalues[i,1]=uncon_oracle.oracle_uncon_test(Cmin,beta, n, snull)#oracle uncon test, cannot be used when test power -- if H_0 not true, what is the true beta?
-        pvalues[i,2]=uncon_plugin.uncon_plugin_test(Cmin, betahat, n, snull)# plugin uncon test
-        pvalues[i,3]=uncon_theory.uncon_theory_test(Cmin, betahat, n, snull) # Alg.3a
-        pvalues[i,4]= con_theory.con_theory_test(Cmin, betahat, n, snull) # Alg.3b
-        pvalues[i,5]= modified_theory_test.modified_theory_test(Cmin, betahat, n, snull)  # (1-p/n)
-    return pvalues
+        pvalues_onesided[i,0], pvalues_twosided[i,0]=Wilks_Chi2_test.p_value_chi(Cmin, n - len(betahat))
+        pvalues_onesided[i,1], pvalues_twosided[i,1]=uncon_oracle.oracle_uncon_test(Cmin,beta, n, snull)#oracle uncon test, cannot be used when test power -- if H_0 not true, what is the true beta?
+        pvalues_onesided[i,2], pvalues_twosided[i,2]=uncon_plugin.uncon_plugin_test(Cmin, betahat, n, snull)# plugin uncon test
+        pvalues_onesided[i,3], pvalues_twosided[i,3]=uncon_theory.uncon_theory_test(Cmin, betahat, n, snull) # Alg.3a
+        pvalues_onesided[i,4], pvalues_twosided[i,4]= con_theory.con_theory_test(Cmin, betahat, n, snull) # Alg.3b
+        pvalues_onesided[i,5], pvalues_twosided[i,5]= modified_theory_test.modified_theory_test(Cmin, betahat, n, snull)  # (1-p/n)
+    return pvalues_onesided, pvalues_twosided
 
 def reject_rate(pvalues,alpha):
     reject=pvalues<=alpha
@@ -69,16 +70,15 @@ def generate_filename(params: dict) -> str:
 
 
 if __name__=="__main__":
-    n = 100  # number of bins  10,25,50,100
-    beta = np.array([5, 1])  # ground-truth beta* {1,5,10} x {0, 1, 2}
-    strue = 'brokenpowerlaw'  # true s
+    n = 50  # number of bins  10,25,50,100
+    beta = np.array([10, 1])  # ground-truth beta* {1,2.5,5,10} x {0, 1, 2}
+    strue = 'spectral_line'  # true s
     snull = 'powerlaw'  # s of H_0
-    loc, strength, width = [0.5, 3, 5]  # For broken-powerlaw and spectral line
+    loc, strength, width = [0.5, 2, 5]  # For broken-powerlaw and spectral line
     iters = 1e4  # repetition times
     np.random.seed(42)  # random seed
 
     # 生成significance level (0.01到0.25，步长0.01)
-    #alpha_values = np.linspace(0.1, 0.1, 1)
     alpha_values=np.linspace(0.01,0.25,25)
 
     params = {
@@ -90,37 +90,26 @@ if __name__=="__main__":
         'iters': iters
     }
 
-    # 定义保存目录（相对路径）
-    save_dir = "results/data"
-
-    # 预分配结果存储
-    results = []
-    total = len(alpha_values)
-    start_time = time.time()
-
-
-    # 进度打印函数
-    def print_progress(current):
-        elapsed = time.time() - start_time
-        remaining = elapsed / (current + 1) * (total - current - 1)
-        print(f"\r进度: {current + 1}/{total} [用时: {elapsed:.1f}s, 剩余: {remaining:.1f}s]", end="")
-
 
     # 主计算循环
     print("Executing...")
-    pvalues=single_test_no_bootstrap_pvalue(n,beta,strue,snull,int(iters),strength=strength,loc=loc,width=width)
-    for idx, alphas in enumerate(alpha_values):
-        results.append({'alpha': alphas, **reject_rate(pvalues,alphas)})
-        #if idx % 1 == 0:
-        #    print_progress(idx)
+    pvalues_onesided, pvalues_twosided=single_test_no_bootstrap_pvalue(n,beta,strue,snull,int(iters),strength=strength,loc=loc,width=width)
 
-    print("\n计算完成，开始导出数据...")
+    # one-sided test
+    results = []
+    for alphas in alpha_values:
+        results.append({'alpha': alphas, **reject_rate(pvalues_onesided,alphas)})
+
+    print("\n Computation finished. Now exporting...")
 
     # 转换为DataFrame
     df = pd.DataFrame(results)
 
     # 优化列顺序
     df = df[['alpha', 'Chisq', 'Oracle', 'Plug_in', 'Uncond','Cond', 'Modified']]
+
+    # 定义保存目录（相对路径）
+    save_dir = "results/data/onesided"
 
     # 导出到Excel
     filename=generate_filename(params)
@@ -137,4 +126,35 @@ if __name__=="__main__":
     worksheet.autofit()
 
     writer.close()
-    print(f"Successfully Saved Data to: {os.path.abspath(full_path)}")
+    print(f"(One-sided) Successfully Saved Data to: {os.path.abspath(full_path)}")
+
+    # two-sided test
+    results = []
+    for alphas in alpha_values:
+        results.append({'alpha': alphas, **reject_rate(pvalues_onesided, alphas)})
+
+    # 转换为DataFrame
+    df = pd.DataFrame(results)
+
+    # 优化列顺序
+    df = df[['alpha', 'Chisq', 'Oracle', 'Plug_in', 'Uncond', 'Cond', 'Modified']]
+
+    # 定义保存目录（相对路径）
+    save_dir = "results/data/twosided"
+
+    # 导出到Excel
+    filename = generate_filename(params)
+    full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
+    writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
+    df.to_excel(writer, index=False, float_format="%.5f")
+
+    # 设置Excel格式
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#FFFF00'})
+    for col_num, value in enumerate(df.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    worksheet.autofit()
+
+    writer.close()
+    print(f"(Two-sided) Successfully Saved Data to: {os.path.abspath(full_path)}")

@@ -15,12 +15,14 @@ sns.set_palette("husl")
 
 def parse_filename(filename):
     """使用正则表达式解析文件名"""
-    pattern = r"results_n(\d+)_beta([\d_]+)_strue(\w+)_snull(\w+)_strength(\d+)_iters([\d.]+)\.xlsx"
+    pattern = r"results_n(\d+)_beta([\d._]+)_strue(\w+)_snull(\w+)_strength(\d+)_iters([\d.]+)\.xlsx"
     match = re.fullmatch(pattern, filename)
     if not match:
         raise ValueError(f"文件名格式不匹配: {filename}")
 
-    beta_values = list(map(int, match.group(2).split('_')))
+    # 解析beta参数（支持整数和浮点数）
+    beta_str = match.group(2).replace("_", " ")  # 将分隔符统一转为空格
+    beta_values = list(map(float, beta_str.split()))
 
     return {
         "n": int(match.group(1)),
@@ -32,9 +34,12 @@ def parse_filename(filename):
     }
 
 
-def load_data(target_params):
+def load_data(target_params,test="one-sided"):
     """加载符合目标参数的数据"""
-    data_dir = "data"
+    if test == "one-sided": # one-sided or two-sided
+        data_dir = "data/onesided"
+    else:
+        data_dir = "data/twosided"
     files = Path(data_dir).glob("results_*.xlsx")
     rows = []
 
@@ -48,14 +53,14 @@ def load_data(target_params):
         match = all(
             params.get(k) == v
             for k, v in target_params.items()
-            if k != "strue"  # 特殊处理关系条件
+            if k != "strue"  and k!="strength"# 特殊处理关系条件
         )
 
         if match:
             df = pd.read_excel(file_path)
             # 添加关系标记列
             df["is_null"] = (params["strue"] == params["snull"])
-            if params["strue"]==target_params["snull"] or params["strue"]==target_params["strue"]:
+            if params["strue"]==target_params["snull"] or (params["strue"]==target_params["strue"] and params["strength"]==target_params["strength"]):
                 rows.append(df)
 
     return pd.concat(rows) if rows else pd.DataFrame()
@@ -130,7 +135,7 @@ def plot_separate_figures(target_params, save_prefix=None):
     ref_line = np.linspace(min_alpha, max_alpha, 100)
     plt.plot(ref_line, ref_line,
              'k--', alpha=0.5, linewidth=1,
-             label='Reference', zorder=1)
+             label='y=x', zorder=1)
 
     plt.xlabel("Nominal significance level (α)")
     plt.ylabel("Type I Error Rate")
@@ -138,7 +143,7 @@ def plot_separate_figures(target_params, save_prefix=None):
     plt.grid(True, alpha=0.3)
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
-    plt.savefig(f"{final_prefix}_type1_error.png", dpi=300, bbox_inches='tight')
+    plt.savefig(f"figure/{final_prefix}_type1_error.png", dpi=300, bbox_inches='tight')
     plt.close()
 
     # Power 图表 =====================================================
@@ -184,7 +189,7 @@ def plot_separate_figures(target_params, save_prefix=None):
     # 绘制参考线
     plt.plot(ref_line, ref_line, 'k--',
              alpha=0.5, linewidth=1,
-             label='Reference', zorder=1)
+             label='y=x', zorder=1)
 
     plt.xlabel("Type I Error Rate")
     plt.ylabel("Power")
@@ -192,7 +197,7 @@ def plot_separate_figures(target_params, save_prefix=None):
     plt.grid(True, alpha=0.3)
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
-    plt.savefig(f"{final_prefix}_power_curve.png", dpi=300, bbox_inches='tight')
+    plt.savefig(f"figure/{final_prefix}_power_curve.png", dpi=300, bbox_inches='tight')
     plt.close()
 
 
@@ -200,12 +205,11 @@ def plot_separate_figures(target_params, save_prefix=None):
 if __name__ == "__main__":
     # 指定需要固定的参数
     target_params = {
-        "n": 100,
-        "beta": [1, 1],  # 自动匹配beta参数
+        "n": 50,
+        "beta": [1.0, 1.],  # 自动匹配beta参数
         "strue": "brokenpowerlaw",
         "snull": "powerlaw",
-        "strength": 3,
+        "strength": 2,
         "iters": 10000.0,
     }
-
     plot_separate_figures(target_params)

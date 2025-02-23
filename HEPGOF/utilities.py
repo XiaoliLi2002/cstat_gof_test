@@ -56,7 +56,7 @@ def nb_data(r,mu):
 
 def p_value_norm(x,mu,sigma):
     z=(x-mu)/sigma
-    return norm.sf(z)
+    return norm.sf(z), 2*min(norm.sf(z),1-norm.sf(z))
 
 def generate_s_exp(n, beta):
     theta1, theta2 = beta
@@ -109,8 +109,8 @@ def generate_s(n,beta,snull,loc=0.5,strength=0.5,width=5):
     elif snull=='brokenpowerlaw':
         return generate_s_broken_powerlaw(n,beta,loc=loc,slope2=strength)
     else:
-        print("No this type of s!")
-        return 0
+        raise ValueError("Warning: Invalid type of distribution!")
+
 
 def spectral_line(s, loc=0.75, strength=10, width=3):
     position = int(len(s) * loc)
@@ -136,8 +136,7 @@ def generate_s_true(n,beta,strue,snull,loc=0.5,strength=10,width=5):
     elif strue=='spectral_line':
         return spectral_line(generate_s(n,beta,snull),loc=loc,strength=strength,width=width)
     else:
-        print("No this type of s!")
-        return 0
+        raise ValueError("Warning: Invalid type of distribution!")
 
 def empirical_bounds(x,snull,epsilon=1e-5):
     bound = [[epsilon, 2*max(x)]] if snull == 'constant' else [[epsilon, 2*max(x)],
