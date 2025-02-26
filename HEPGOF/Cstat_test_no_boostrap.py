@@ -2,9 +2,8 @@ from utilities import *
 from Likelihood_Design_mat import LLF, LLF_grad
 import Wilks_Chi2_test
 import uncon_oracle, uncon_plugin, uncon_theory, con_theory, modified_theory_test
-import time
 import os
-
+from testfunc import generate_filename_xlsx, reject_rate
 
 def single_test_no_bootstrap_pvalue(n,beta,strue,snull,iters,epsilon=1e-5,loc=0.5,strength=3,width=5):
     s = generate_s_true(n, beta, strue, snull, loc=loc, strength=strength,
@@ -34,40 +33,6 @@ def single_test_no_bootstrap_pvalue(n,beta,strue,snull,iters,epsilon=1e-5,loc=0.
         pvalues_onesided[i,5], pvalues_twosided[i,5]= modified_theory_test.modified_theory_test(Cmin, betahat, n, snull)  # (1-p/n)
     return pvalues_onesided, pvalues_twosided
 
-def reject_rate(pvalues,alpha):
-    reject=pvalues<=alpha
-    return {
-        'Chisq': np.mean(reject[0:,0]),
-        'Oracle': np.mean(reject[0:,1]),
-        'Plug_in': np.mean(reject[0:,2]),
-        'Uncond': np.mean(reject[0:,3]),
-        'Cond': np.mean(reject[0:,4]),
-        'Modified': np.mean(reject[0:,5]),
-    }
-
-
-def generate_filename(params: dict) -> str:
-    """生成包含参数的文件名"""
-    components = []
-
-    # 按参数顺序处理每个参数（保持你想要的顺序）
-    for key in ['n', 'beta', 'strue', 'snull', 'strength', 'iters']:
-        value = params[key]
-
-        # 处理列表类型的参数（如beta）
-        if isinstance(value, np.ndarray):  # 处理numpy数组
-            components.append(f"{key}{'_'.join(map(str, value))}")
-        elif isinstance(value, list):
-            components.append(f"{key}{'_'.join(map(str, value))}")
-        # 处理字符串类型的参数
-        elif isinstance(value, str):
-            components.append(f"{key}{value}")
-        # 处理数值类型的参数
-        else:
-            components.append(f"{key}{value}")
-
-    return "results_" + "_".join(components) + ".xlsx"
-
 
 if __name__=="__main__":
     n = 50  # number of bins  10,25,50,100
@@ -95,10 +60,11 @@ if __name__=="__main__":
     print("Executing...")
     pvalues_onesided, pvalues_twosided=single_test_no_bootstrap_pvalue(n,beta,strue,snull,int(iters),strength=strength,loc=loc,width=width)
 
+    method_names=['Chisq', 'Oracle', 'Plug_in', 'Uncond','Cond', 'Modified']
     # one-sided test
     results = []
     for alphas in alpha_values:
-        results.append({'alpha': alphas, **reject_rate(pvalues_onesided,alphas)})
+        results.append({'alpha': alphas, **reject_rate(pvalues_onesided,alphas, method_names=method_names)})
 
     print("\n Computation finished. Now exporting...")
 
@@ -106,13 +72,13 @@ if __name__=="__main__":
     df = pd.DataFrame(results)
 
     # 优化列顺序
-    df = df[['alpha', 'Chisq', 'Oracle', 'Plug_in', 'Uncond','Cond', 'Modified']]
+    df = df[['alpha']+method_names]
 
     # 定义保存目录（相对路径）
     save_dir = "results/data/onesided"
 
     # 导出到Excel
-    filename=generate_filename(params)
+    filename=generate_filename_xlsx(params)
     full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
     writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
     df.to_excel(writer, index=False, float_format="%.5f")
@@ -131,19 +97,19 @@ if __name__=="__main__":
     # two-sided test
     results = []
     for alphas in alpha_values:
-        results.append({'alpha': alphas, **reject_rate(pvalues_onesided, alphas)})
+        results.append({'alpha': alphas, **reject_rate(pvalues_onesided, alphas, method_names=method_names)})
 
     # 转换为DataFrame
     df = pd.DataFrame(results)
 
     # 优化列顺序
-    df = df[['alpha', 'Chisq', 'Oracle', 'Plug_in', 'Uncond', 'Cond', 'Modified']]
+    df = df[['alpha']+method_names]
 
     # 定义保存目录（相对路径）
     save_dir = "results/data/twosided"
 
     # 导出到Excel
-    filename = generate_filename(params)
+    filename = generate_filename_xlsx(params)
     full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
     writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
     df.to_excel(writer, index=False, float_format="%.5f")
