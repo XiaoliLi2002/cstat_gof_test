@@ -117,11 +117,11 @@ if __name__=="__main__":
     # Set Parameters
     n = 25  # number of bins
     beta = np.array([5., 1.])  # ground-truth beta*
-    B1 = B2 = B = 100  # Bootstrap
+    B1 = B2 = B = 1000  # Bootstrap
     strue = 'powerlaw'  # true s
     snull = 'powerlaw'  # s of H_0
     loc, strength, width = [0.5, 3, 5]  # For broken-powerlaw and spectral line
-    TOTAL_ITERATIONS = 100  # repetition times
+    TOTAL_ITERATIONS = 1000  # repetition times
 
     np.random.seed(42)  # random seed
 

@@ -5,7 +5,7 @@ import uncon_oracle, uncon_plugin, uncon_theory, con_theory, modified_theory_tes
 import os
 import time
 
-def single_test_timed_no_double_bootstrap(n,beta,strue,snull,B=1000,iters=1000,epsilon=1e-5,loc=0.5,strength=10,width=2):
+def single_test_timed_no_double_bootstrap(n,beta,strue,snull,B=1000,iters=1000,epsilon=1e-5,loc=0.5,strength=10,width=5):
     s=generate_s_true(n,beta,strue,snull,loc,strength,width) # ground-truth
     pvalues_onesided=np.ones((iters,8)) #totally 8 methods, if strue=snull: Type I Error; if strue!=snull: Power
     pvalues_twosided=np.ones((iters,8))
@@ -87,6 +87,98 @@ def generate_filename_xlsx(params: dict) -> str:
             components.append(f"{key}{value}")
     return "results_" + "_".join(components) + ".xlsx"
 
+def single_test_timed_run_and_save_no_doubleB(n,beta,strue,snull,B=1000,iters=1000,epsilon=1e-5,loc=0.5,strength=10,width=5):
+    np.random.seed(42)
+    params = {
+        'n': n,
+        'B': B,
+        'beta': beta,
+        'strue': strue,
+        'snull': snull,
+        'strength': strength,
+        'iters': iters
+    }
+    method_names = ['Chisq', 'Oracle', 'Plug_in', 'Uncond', 'Cond', 'Modified', 'Asymptotic_B', 'Empirical_B']
+
+    # Calculating p-values
+    print("Executing...")
+    pvalues_onesided, pvalues_twosided, execution_time = single_test_timed_no_double_bootstrap(n, beta, strue, snull,
+                                                                                               B=B, iters=int(iters),
+                                                                                               strength=strength,
+                                                                                               loc=loc, width=width,epsilon=epsilon)
+    print("\n Computation finished. Now exporting...")
+
+    # Time
+    results = {method_names[i]: execution_time[0:, i] for i in range(len(method_names))}
+    df = pd.DataFrame(results)
+    # Change Column order
+    df = df[method_names]
+    # Set Save Directory （Path).
+    save_dir = "results/data/time/"
+    os.makedirs(save_dir, exist_ok=True)
+    # To Excel
+    filename = generate_filename_xlsx(params)
+    full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
+    writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
+    df.to_excel(writer, index=False, float_format="%.5f")
+
+    # Set Excel format
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#FFFF00'})
+    for col_num, value in enumerate(df.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    worksheet.autofit()
+
+    writer.close()
+    print(f"(Time) Successfully Saved Data to: {os.path.abspath(full_path)}")
+
+    # P-values
+    # One-sided
+    results = {method_names[i]: pvalues_onesided[0:, i] for i in range(len(method_names))}
+    df = pd.DataFrame(results)
+    df = df[method_names]
+
+    save_dir = "results/data/pvalues/onesided/"
+    os.makedirs(save_dir, exist_ok=True)
+    filename = generate_filename_xlsx(params)
+    full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
+    writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
+    df.to_excel(writer, index=False, float_format="%.5f")
+
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#FFFF00'})
+    for col_num, value in enumerate(df.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    worksheet.autofit()
+
+    writer.close()
+    print(f"(One-sided test) Successfully Saved Data to: {os.path.abspath(full_path)}")
+
+    # Two-sided
+    results = {method_names[i]: pvalues_twosided[0:, i] for i in range(len(method_names))}
+    df = pd.DataFrame(results)
+    df = df[method_names]
+
+    save_dir = "results/data/pvalues/twosided/"
+    os.makedirs(save_dir, exist_ok=True)
+    filename = generate_filename_xlsx(params)
+    full_path = os.path.join(save_dir, filename)  # 跨平台路径拼接
+    writer = pd.ExcelWriter(full_path, engine='xlsxwriter')
+    df.to_excel(writer, index=False, float_format="%.5f")
+
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#FFFF00'})
+    for col_num, value in enumerate(df.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    worksheet.autofit()
+
+    writer.close()
+    print(f"(Two-sided test) Successfully Saved Data to: {os.path.abspath(full_path)}")
+
+'''
 if __name__=="__main__":
     # Set Parameters
     n = 10  # number of bins
@@ -185,6 +277,8 @@ if __name__=="__main__":
 
     writer.close()
     print(f"(Two-sided test) Successfully Saved Data to: {os.path.abspath(full_path)}")
+    
+'''
 
 # Rejection rates
 '''
