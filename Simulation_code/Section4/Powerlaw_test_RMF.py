@@ -97,13 +97,14 @@ def expectation(s,n,X,I,max):
     return float(E)
 
 def Var(s,n,X,I,max):
+    p=len(I)
     V = np.diag([1/s[i] for i in range(n)])
     k_11 = np.mat([kapa11(s[i],max)/s[i] for i in range(n)]).T
     var = (-k_11.T * X * (X.T * V * X) ** (-1) * X.T * k_11)[0, 0]
     for i in range(n):
         var += kapa2(s[i],max)
-    print(math.sqrt(var))
-    return var
+    print(math.sqrt((1-p/n)*var))
+    return (1-p/n)*var
 
 def kapa1(mu,max):
     x = 0
