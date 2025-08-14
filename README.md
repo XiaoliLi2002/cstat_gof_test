@@ -29,14 +29,6 @@ cd yourrepo
 
 pip install -r requirements.txt
 
----
-
-## 🚀 Quick Start
-Example for reproducing Section 4:
-
-cd simulations/Section4
-
-run the code: 
 
 ---
 
