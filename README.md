@@ -1,7 +1,4 @@
 
----
-
-```markdown
 # Simulation Codes for "Your Paper Title"
 
 This repository contains the code, data, and results for reproducing the simulations in our paper:
