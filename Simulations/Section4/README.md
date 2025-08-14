@@ -33,8 +33,6 @@ You can reproduce a specific setting by:
 
 Change the parameters in the code `Cstat_test_with_single.py`. The default setting is 
 
-`
-    # params
 
     n = 500  # number of bins
     
