@@ -19,4 +19,4 @@ Example for reproducing Figure 1 of Section 4:
 
 cd simulations/Section4
 
-run the code: 
+run the code: `Histogram.py`
