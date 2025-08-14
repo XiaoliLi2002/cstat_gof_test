@@ -1,4 +1,4 @@
-
+High-Energy Astronomy Goodness-of-Fit (HEAGOF)
 # Simulation Codes for "Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data"
 
 This repository contains the code, data, and results for reproducing the simulations in our paper:
