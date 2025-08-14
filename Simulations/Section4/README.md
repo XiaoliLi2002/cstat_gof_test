@@ -7,7 +7,7 @@ This folder contains the code, data, and results for reproducing **Section 4** o
 
 ## 📄 Overview
 In Section 4, we evaluate the performance of our proposed method under various settings.
-The main conclusion is that our recommended Corrected $Z$-test is best calibrated in terms of Type~I error rate and power.
+The main conclusion is that our recommended Corrected $Z$-test is best calibrated in terms of Type I error rate and power.
 
 ---
 
