@@ -17,7 +17,7 @@ This repository contains the code, data, and results for reproducing the simulat
 ---
 
 ## ⚙️ Installation
-```bash
+
 git clone https://github.com/yourusername/yourrepo.git
 cd yourrepo
 pip install -r requirements.txt
