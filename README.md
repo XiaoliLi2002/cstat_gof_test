@@ -22,10 +22,14 @@ git clone https://github.com/yourusername/yourrepo.git
 cd yourrepo
 pip install -r requirements.txt
 
+---
+
 ## 🚀 Quick Start
 Example for reproducing Section 3:
 cd simulations/Section3
 bash run.sh
+
+---
 
 ## 📜 Citation
 @article{your_paper_citation,
