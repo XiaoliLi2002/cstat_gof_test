@@ -16,3 +16,4 @@ The main conclusion is that our method achieves **lower RMSE** compared to basel
 2. Run:
 ```bash
 bash run.sh
+This will:
