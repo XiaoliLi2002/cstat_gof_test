@@ -38,7 +38,7 @@ Change the parameters in the code `Cstat_test_with_single.py`. The default setti
     
     B = 300  # number of Bootstrap replicates
     
-    beta = np.array([0.25, 1])  # ground-truth beta*
+    beta = np.array([0.25, 1])  # ground-truth beta*, K=0.25, Gamma=1
     
     strue = 'powerlaw'  # true s : powerlaw/ brokenpowerlaw/ spectral_line
     
