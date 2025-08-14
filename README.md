@@ -1,4 +1,4 @@
-The codes to implement algorithms in the paper "Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data".
+Here includes the codes to implement algorithms in the paper "Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data".
 
 The files in the directory "Simulations" are the data and codes used in our paper.
 
