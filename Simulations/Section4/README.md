@@ -18,7 +18,7 @@ The main conclusion is that our recommended Corrected $Z$-test is best calibrate
 
 This will:
 - Load the data from `results/data/`
-- Run the main script
+- Run the script
 - Save the figures to `results/figure/`
 
 ## 📊 Results
