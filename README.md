@@ -2,7 +2,9 @@
 
 
 We developed **HEAGOF** for the broader astronomical community and other researchers that need goodness-of-fit assessments for heterogeneous low-count Poisson data.
+
 **HEAGOF** enables researchers to directly obtain well-calibrated principled goodness-of-fit assessment in a straightforward manner without needing a full understanding of the technical details requiredeither to determine an appropriate approximation to the null distribution or to define and fit a fully Bayesian model.
+
 This repository contains the code, data, and results for reproducing the simulations in our paper and the :
 
 > **Title:** Your Paper Title  
