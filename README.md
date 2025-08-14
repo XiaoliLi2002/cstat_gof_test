@@ -1,5 +1,41 @@
-Here includes the codes to implement algorithms in the paper "Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data".
 
-The files in the directory "Simulations" are the data and codes used in our paper.
+---
 
-The files in the directory "cstat_HEAGOF" are codes for users to implement goodness-of-fit test with Cstat by using algorithms described in our paper.
+## 根目录 README.md
+```markdown
+# Simulation Codes for "Your Paper Title"
+
+This repository contains the code, data, and results for reproducing the simulations in our paper:
+
+> **Title:** Your Paper Title  
+> **Authors:** Your Name, Coauthor Name  
+> **Link:** [arXiv / Journal link]
+
+---
+
+## 📂 Structure
+- `simulations/Section3` – Code and results for Section 3 (Simulation Study 1)
+- `simulations/Section4` – Code and results for Section 4 (Simulation Study 2)
+- `utils/` – Helper functions used across sections
+
+---
+
+## ⚙️ Installation
+```bash
+git clone https://github.com/yourusername/yourrepo.git
+cd yourrepo
+pip install -r requirements.txt
+
+## 🚀 Quick Start
+Example for reproducing Section 3:
+cd simulations/Section3
+bash run.sh
+
+## 📜 Citation
+@article{your_paper_citation,
+  title={Your Paper Title},
+  author={Your Name and Coauthor Name},
+  journal={Journal Name},
+  year={2025}
+}
+
