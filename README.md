@@ -7,8 +7,10 @@ We developed **HEAGOF** for the broader astronomical community and other researc
 
 This repository contains the package **HEAGOF** and the code, data, and results for reproducing the simulations in our paper:
 
-> **Title:** Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data 
-> **Authors:** Xiaoli Li, Yang Chen, Xiao-Li Meng, David A. van Dyk, Massimiliano Bonamente, Vinay L.\ Kashyap 
+> **Title:** Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data
+> 
+> **Authors:** Xiaoli Li, Yang Chen, Xiao-Li Meng, David A. van Dyk, Massimiliano Bonamente, Vinay L.\ Kashyap
+> 
 > **Link:** [arXiv / Journal link] 
 
 ---
