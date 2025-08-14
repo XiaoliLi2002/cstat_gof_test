@@ -14,13 +14,12 @@ The main conclusion is that our recommended Corrected $Z$-test is best calibrate
 ## ▶️ How to Reproduce
 1. Make sure you have installed the dependencies from the main README.
    
-2. Run:
-bash run.sh
+2. Run: `Histogram.py` (Figure1), 'results/Plot_cov_width_mu` (Figure2), `results/Plot_cov_width_n` (Figure3), `Plot_3x3figure` (Figure4)
 
 This will:
-- Load the data from `data/`
-- Run the main script in `code/`
-- Save the figures to `results/`
+- Load the data from `results/data/`
+- Run the main script
+- Save the figures to `results/figure/`
 
 ## 📊 Results
 Example output (Figure 1 from the paper):
