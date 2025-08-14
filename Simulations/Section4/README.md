@@ -18,9 +18,9 @@ The main conclusion is that our recommended Corrected $Z$-test is best calibrate
 bash run.sh
 
 This will:
-- Load the data from 'data/'
-- Run the main script in 'code/'
-- Save the figures to 'results/'
+- Load the data from `data/`
+- Run the main script in `code/`
+- Save the figures to `results/`
 
 ## 📊 Results
 Example output (Figure 1 from the paper):
@@ -31,7 +31,17 @@ In our simulation design, we set $\Gamma= 1$, and treat $n\in \{10, 25, 50, 100,
 
 You can reproduce a specific setting by:
 
-Change the parameters in the code 'Cstat_test_with_single.py'. The default setting is $n=100$,
+Change the parameters in the code `Cstat_test_with_single.py`. The default setting is 
+
+`# params
+    n = 500  # number of bins
+    B = 300
+    beta = np.array([0.25, 1])  # ground-truth beta*
+    strue = 'powerlaw'  # true s : powerlaw/ brokenpowerlaw/ spectral_line
+    snull = 'powerlaw'  # s of H_0 : powerlaw
+    loc, strength, width = [0.5, 3, int(0.1*n)]  # For broken-powerlaw and spectral line
+    iters = 3000  # repetition times, suppose p=0.1. Then CI = +-0.01 (3k), +-0.02 (1k). p=0.25, then CI = +-0.015 (3k). p=0.5, CI = +-0.02( 3k)
+    np.random.seed(0)  # random seed`
 
 
 Then
