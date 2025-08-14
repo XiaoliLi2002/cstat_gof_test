@@ -24,6 +24,7 @@ This will:
 
 ## 📊 Results
 Example output (Figure 1 from the paper):
+
 ![Figure1](results/figure/Histogram.pdf)
 
 
