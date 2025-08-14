@@ -14,7 +14,7 @@ The main conclusion is that our recommended Corrected $Z$-test is best calibrate
 ## ▶️ How to Reproduce
 1. Make sure you have installed the dependencies from the main README.
    
-2. Run: `Histogram.py` (Figure1), `results/Plot_cov_width_mu` (Figure2), `results/Plot_cov_width_n` (Figure3), `Plot_3x3figure` (Figure4)
+2. Run: `Histogram.py` (Figure 1), `results/Plot_cov_width_mu` (Figure 2), `results/Plot_cov_width_n` (Figure 3), `Plot_3x3figure` (Figure 4)
 
 This will:
 - Load the data from `results/data/`
