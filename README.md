@@ -1,7 +1,6 @@
 
 ---
 
-## 根目录 README.md
 ```markdown
 # Simulation Codes for "Your Paper Title"
 
