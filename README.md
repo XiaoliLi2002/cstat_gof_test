@@ -42,6 +42,8 @@ run the code:
 
 ## 📜 Citation
 
+If you use this code, please cite:
+
 @article{your_paper_citation,
 
   title={Your Paper Title},
