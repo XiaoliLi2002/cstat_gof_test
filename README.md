@@ -5,10 +5,10 @@ We developed **HEAGOF** for the broader astronomical community and other researc
 
 **HEAGOF** enables researchers to directly obtain well-calibrated principled goodness-of-fit assessment in a straightforward manner without needing a full understanding of the technical details required either to determine an appropriate approximation to the null distribution or to define and fit a fully Bayesian model.
 
-This repository contains the code, data, and results for reproducing the simulations in our paper and the :
+This repository contains the package **HEAGOF** and the code, data, and results for reproducing the simulations in our paper:
 
-> **Title:** Your Paper Title  
-> **Authors:** Your Name, Coauthor Name  
+> **Title:** Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data 
+> **Authors:** Xiaoli Li, Yang Chen, Xiao-Li Meng, David A. van Dyk, Massimiliano Bonamente, Vinay L.\ Kashyap
 > **Link:** [arXiv / Journal link]
 
 ---
