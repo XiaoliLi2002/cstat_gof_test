@@ -1,7 +1,12 @@
-High-Energy Astronomy Goodness-of-Fit (HEAGOF)
-# Simulation Codes for "Making high-order asymptotics practical: correcting goodness-of-fit test for astronomical count data"
+# High-Energy Astronomy Goodness-of-Fit (HEAGOF)
 
-This repository contains the code, data, and results for reproducing the simulations in our paper:
+
+We developed HEAGOF for the broader  astronomical community and other researchers that need goodness-of-fit assessments for heterogeneous low-count Poisson data.
+\HEAGOF\ enables researchers to directly obtain well-calibrated principled goodness-of-fit assessment in a straightforward manner without needing a full understanding of the technical details required
+%\{(such as Xspec~\citep{arnaud1996astronomical} and Sherpa~\citep{freeman2001sherpa})} that all astronomy can directly apply in a straightforward manner,  without having to learn the technical details needed 
+either to determine an appropriate approximation to the null distribution or to
+define and fit a fully Bayesian model.
+This repository contains the code, data, and results for reproducing the simulations in our paper and the :
 
 > **Title:** Your Paper Title  
 > **Authors:** Your Name, Coauthor Name  
