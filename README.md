@@ -41,10 +41,16 @@ run the code:
 ---
 
 ## 📜 Citation
+
 @article{your_paper_citation,
+
   title={Your Paper Title},
+  
   author={Your Name and Coauthor Name},
+  
   journal={Journal Name},
+  
   year={2025}
+  
 }
 
