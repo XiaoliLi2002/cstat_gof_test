@@ -36,7 +36,7 @@ Change the parameters in the code `Cstat_test_with_single.py`. The default setti
 
     n = 500  # number of bins
     
-    B = 300
+    B = 300  # number of Bootstrap replicates
     
     beta = np.array([0.25, 1])  # ground-truth beta*
     
@@ -49,7 +49,7 @@ Change the parameters in the code `Cstat_test_with_single.py`. The default setti
     iters = 3000  # repetition times, suppose p=0.1. Then CI = +-0.01 (3k), +-0.02 (1k). p=0.25, then CI = +-0.015 (3k). p=0.5, CI = +-0.02( 3k)
     
     np.random.seed(0)  # random seed
-    `
+    
 
 
 Then
