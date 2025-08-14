@@ -30,5 +30,10 @@ Example output (Figure 1 from the paper):
 In our simulation design, we set $\Gamma= 1$, and treat $n\in \{10, 25, 50, 100, 200 \}$, and $K\in \{0.1, 0.25, 0.5, 1, 1.6, 2.5, 5,10 \}$ as factors. The entire set of simulations is repeated with (a) no line, i.e., $b=0$, (b) an emission line with $\Phi = 2K$, and (c) an absorption line with $\Psi = K/10$. In both (b) and (c) the line is located with $m_1=n/2$ and $b=n/10$ so that the line extends over the energy range $(1.5, 1.6)$, but shifted one-half of a bin width to the right.
 
 You can reproduce a specific setting by:
+
+Change the parameters in the code 'Cstat_test_with_single.py'. The default setting is $n=100$,
+
+
+Then
 ```bash
-python code/main.py --setting S1
+python Cstat_test_with_single.py
