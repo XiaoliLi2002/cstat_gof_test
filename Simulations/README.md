@@ -17,6 +17,6 @@ This repository contains the code, data, and results for reproducing the simulat
 ## 🚀 Quick Start
 Example for reproducing Figure 1 of Section 4:
 
-cd simulations/Section4
+`cd simulations/Section4`
 
 run the code: `Histogram.py`

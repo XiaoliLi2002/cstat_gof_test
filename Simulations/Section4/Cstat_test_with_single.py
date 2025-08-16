@@ -4,7 +4,7 @@ import Wilks_Chi2_test
 import uncon_plugin,  con_theory, bootstrap_empirical
 import os
 import time
-from testfunc import generate_filename_xlsx, reject_rate
+from HEPGOF.testfunc import generate_filename_xlsx, reject_rate
 
 def single_test_with_single_bootstrap_pvalue(n,beta,strue,snull,iters,B=1000,epsilon=1e-5,loc=0.5,strength=3,width=5):
     inital_time=time.time()
