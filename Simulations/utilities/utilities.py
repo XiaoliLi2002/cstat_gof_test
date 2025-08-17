@@ -335,3 +335,29 @@ def Cashstat(x,s):
             C +=s[j] - x[j] * np.log(s[j] / x[j]) - x[j]
     C=C*2
     return C
+
+def reject_rate(pvalues, alpha, method_names):
+    reject = pvalues <= alpha
+    rejectrate=np.mean(reject,axis=0)
+    return {method_names[i]: rejectrate[i] for i in range(len(method_names))}
+
+def generate_filename_xlsx(params: dict) -> str:
+    """generate filenames including params"""
+    components = []
+
+    # process params (keep order)
+    for key in ['n', 'beta', 'strue', 'snull', 'strength', 'iters']:
+        value = params[key]
+
+        # process list (beta)
+        if isinstance(value, np.ndarray):  # numpy
+            components.append(f"{key}{'_'.join(map(str, value))}")
+        elif isinstance(value, list):
+            components.append(f"{key}{'_'.join(map(str, value))}")
+        # string
+        elif isinstance(value, str):
+            components.append(f"{key}{value}")
+        # numeric
+        else:
+            components.append(f"{key}{value}")
+    return "results_" + "_".join(components) + ".xlsx"

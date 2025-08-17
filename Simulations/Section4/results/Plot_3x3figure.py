@@ -4,9 +4,9 @@ import numpy as np
 from Plot_1valpha import plot_1vsalpha_single
 from Plot_powervsalpha import *
 
-# 使用示例
+
 if __name__ == "__main__":
-    # 指定需要固定的参数
+
     test = 'one-sided'  # one-sided or two-sided
     beta1 = np.array([0.25, 1.0, 5.0])
     strength_absorb = beta1/10
@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     target_params_type1 = [{
         "n": 50,
-        "beta": [i, 1.],  # 自动匹配beta参数
+        "beta": [i, 1.],
         "strue": "powerlaw",
         "snull": "powerlaw",
         "strength": 3,
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     target_params_power_absorb = [{
         "n": 50,
-        "beta": [beta1[i], 1.],  # 自动匹配beta参数
+        "beta": [beta1[i], 1.],
         "strue": "spectral_line",
         "snull": "powerlaw",
         "strength": strength_absorb[i],
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     target_params_power_emission = [{
         "n": 50,
-        "beta": [beta1[i], 1.],  # 自动匹配beta参数
+        "beta": [beta1[i], 1.],
         "strue": "spectral_line",
         "snull": "powerlaw",
         "strength": strength_emission[i],
@@ -83,4 +83,4 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     #final_prefix = create_prefix(target_params[0])
-    plt.savefig(f"figurenew/3x3figure_trans_blackcolor.pdf", bbox_inches='tight')
+    plt.savefig(f"figure/3x3figure.pdf", bbox_inches='tight')

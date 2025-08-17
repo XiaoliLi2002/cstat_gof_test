@@ -1,5 +1,5 @@
-from utilities import *
-from bootstrap_empirical import bootstrap_test, LLF, LLF_grad
+from Simulations.utilities.utilities import *
+from Simulations.utilities.bootstrap_empirical import bootstrap_test, LLF, LLF_grad
 
 def double_boostrap(Cmin,beta,n,snull,B1=1000,B2=1000, epsilon=1e-5):
     """

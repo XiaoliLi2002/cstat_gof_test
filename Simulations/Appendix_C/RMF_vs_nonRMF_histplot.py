@@ -238,7 +238,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF, beta, args=(x, ARE, I, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -255,7 +255,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s2)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -318,7 +318,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF_test1, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -335,7 +335,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s2)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -396,7 +396,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF_test2, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -413,7 +413,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s2)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -475,7 +475,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF_test3, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -492,7 +492,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         for i in range(B):
             print(i)
             x = poisson_data(s2)
-            if x == [0 for i in range(n)]:
+            if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
                                 bounds=([[1e-5, np.inf], [-10, 10]]))
@@ -547,7 +547,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
                   fontsize=18)
 
         plt.tight_layout()
-        plt.savefig('RMFvsnoRMF.pdf')
+        plt.savefig('results/figure/RMFvsnoRMF.pdf')
 
 B=1000
 n_test=50

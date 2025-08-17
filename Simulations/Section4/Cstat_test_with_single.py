@@ -1,10 +1,9 @@
-from utilities import *
-from Likelihood_Design_mat import LLF, LLF_grad
-import Wilks_Chi2_test
-import uncon_plugin,  con_theory, bootstrap_empirical
+from Simulations.utilities.utilities import *
+from Simulations.utilities.Likelihood_Design_mat import LLF, LLF_grad
+import Simulations.utilities.Wilks_Chi2_test
+import Simulations.utilities.uncon_plugin,  Simulations.utilities.con_theory, Simulations.utilities.bootstrap_empirical
 import os
 import time
-from HEPGOF.testfunc import generate_filename_xlsx, reject_rate
 
 def single_test_with_single_bootstrap_pvalue(n,beta,strue,snull,iters,B=1000,epsilon=1e-5,loc=0.5,strength=3,width=5):
     inital_time=time.time()
@@ -41,22 +40,22 @@ def single_test_with_single_bootstrap_pvalue(n,beta,strue,snull,iters,B=1000,eps
         # start test
         time_now=time.time()
         pvalues_onesided[i,0], pvalues_twosided[i,0], CashCritical_onesided[i,0], Width_twosided[i,0]\
-            =Wilks_Chi2_test.p_value_chi(Cmin, n - len(betahat), alpha=significance_level) # Chisq test
+            =Simulations.utilities.Wilks_Chi2_test.p_value_chi(Cmin, n - len(betahat), alpha=significance_level) # Chisq test
         times[i,0]=time.time()-time_now
 
         time_now=time.time()
         pvalues_onesided[i,1], pvalues_twosided[i,1], CashCritical_onesided[i,1], Width_twosided[i,1]\
-            =uncon_plugin.uncon_plugin_test(Cmin, betahat, n, snull, alpha=significance_level)# plugin uncon test
+            =Simulations.utilities.uncon_plugin.uncon_plugin_test(Cmin, betahat, n, snull, alpha=significance_level)# plugin uncon test
         times[i,1]=time.time()-time_now
 
         time_now=time.time()
         pvalues_onesided[i,2], pvalues_twosided[i,2], CashCritical_onesided[i,2], Width_twosided[i,2]\
-            = con_theory.con_theory_test(Cmin, betahat, n, snull, alpha=significance_level) # Conditional test
+            = Simulations.utilities.con_theory.con_theory_test(Cmin, betahat, n, snull, alpha=significance_level) # Conditional test
         times[i,2]=time.time()-time_now
 
         time_now=time.time()
         pvalues_onesided[i,3], pvalues_twosided[i,3], CashCritical_onesided[i,3], Width_twosided[i,3]\
-            = bootstrap_empirical.bootstrap_test(Cmin,betahat,n,snull,B=B, alpha=significance_level)  # Empirical Bootstrap test
+            = Simulations.utilities.bootstrap_empirical.bootstrap_test(Cmin,betahat,n,snull,B=B, alpha=significance_level)  # Empirical Bootstrap test
         times[i,3]=time.time()-time_now
     return pvalues_onesided, pvalues_twosided, times, CashCritical_onesided, Width_twosided
 
@@ -139,7 +138,7 @@ if __name__=="__main__":
     # Change Column order
     df = df[method_names]
     # Set Save Directory （Path).
-    save_dir = "results/datanew/time/"
+    save_dir = "results/data/time/"
     os.makedirs(save_dir, exist_ok=True)
     # To Excel
     filename = generate_filename_xlsx(params)
@@ -164,7 +163,7 @@ if __name__=="__main__":
     # Change Column order
     df = df[method_names]
     # Set Save Directory （Path).
-    save_dir = "results/datanew/CriticalValue/"
+    save_dir = "results/data/CriticalValue/"
     os.makedirs(save_dir, exist_ok=True)
     # To Excel
     filename = generate_filename_xlsx(params)
@@ -189,7 +188,7 @@ if __name__=="__main__":
     # Change Column order
     df = df[method_names]
     # Set Save Directory （Path).
-    save_dir = "results/datanew/Width/"
+    save_dir = "results/data/Width/"
     os.makedirs(save_dir, exist_ok=True)
     # To Excel
     filename = generate_filename_xlsx(params)
@@ -222,7 +221,7 @@ if __name__=="__main__":
     df = df[['alpha']+method_names]
 
     # set dir
-    save_dir = "results/datanew/onesided"
+    save_dir = "results/data/onesided"
     os.makedirs(save_dir, exist_ok=True)
     # toExcel
     filename=generate_filename_xlsx(params)
@@ -250,7 +249,7 @@ if __name__=="__main__":
 
     df = df[['alpha']+method_names]
 
-    save_dir = "results/datanew/twosided"
+    save_dir = "results/data/twosided"
     os.makedirs(save_dir, exist_ok=True)
     filename = generate_filename_xlsx(params)
     full_path = os.path.join(save_dir, filename)  # cat

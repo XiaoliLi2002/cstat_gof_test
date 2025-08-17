@@ -1,6 +1,6 @@
-from utilities import *
-from cumulants import expectation, Var
-from Likelihood_Design_mat import design_mat
+from Simulations.utilities.utilities import *
+from Simulations.utilities.cumulants import expectation, Var
+from Simulations.utilities.Likelihood_Design_mat import design_mat
 
 def con_theory_test(x,beta,n,snull, alpha=0.1):
     """

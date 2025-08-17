@@ -1,4 +1,4 @@
-from utilities import chi2
+from Simulations.utilities.utilities import chi2
 
 def p_value_chi(x,df,alpha=0.1):
     """

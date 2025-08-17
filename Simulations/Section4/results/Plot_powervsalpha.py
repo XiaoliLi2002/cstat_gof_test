@@ -1,6 +1,6 @@
-from Plot_powervs1 import *
+from Plot_1valpha import *
 
-# 设置全局样式
+
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
 sns.set_palette("husl")
@@ -9,14 +9,14 @@ sns.set_palette("husl")
 def plot_powervsalpha_single(target_params, save_prefix=None, test='one-sided'):
     full_df = load_data(target_params,test=test)
     if full_df.empty:
-        print("没有找到匹配的数据")
+        print("No Matches Found!")
         return
 
     methods = ['Chisq', 'Plug_in', 'Cond', 'SingleB']
     method_names=[r'LR-$\chi^2$ test', r'Naive Z-test', r'Corrected Z-test', r'Parametric Bootstrap']
     colors = ["#F0E442", "#D55E00", "black", "#56B4E9"]  # color
 
-    # Type I Error 图表 ==============================================
+    # Type I Error ==============================================
     null_df = full_df[~full_df["is_null"]].sort_values("alpha")
     min_alpha = null_df["alpha"].min()
     max_alpha = null_df["alpha"].max()
@@ -65,14 +65,14 @@ def plot_powervsalpha_single(target_params, save_prefix=None, test='one-sided'):
     #plt.tight_layout()
 
 
-# 使用示例
+
 if __name__ == "__main__":
     # Fix params, brokenpowerlaw
     test='one-sided'
     beta1=[1.0,2.5,5.0,10.0]
     target_params = [{
         "n": 50,
-        "beta": [i, 1.],  # 自动匹配beta参数
+        "beta": [i, 1.],
         "strue": "brokenpowerlaw",
         "snull": "powerlaw",
         "strength": 3,
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     strength=[1,0.1,3,1]
     target_params = [{
         "n": 50,
-        "beta": [beta2[i], 1.],  # 自动匹配beta参数
+        "beta": [beta2[i], 1.],
         "strue": "spectral_line",
         "snull": "powerlaw",
         "strength": strength[i],
@@ -114,4 +114,4 @@ if __name__ == "__main__":
             plt.legend()
     plt.tight_layout()
     final_prefix = create_prefix(target_params[0])
-    plt.savefig(f"figurenew/{test}/{final_prefix}_powervsalpha_all.pdf", bbox_inches='tight')
+    plt.savefig(f"figure/{test}/{final_prefix}_powervsalpha_all.pdf", bbox_inches='tight')

@@ -6,7 +6,6 @@ This repository contains the code, data, and results for reproducing the simulat
 ---
 
 ## 📂 Structure
-- `simulations/Codes_and_Data` - All the codes and data we used in our paper.
 - `simulations/Section4` – Code and results for Section 4 (Simulation Studies)
 - `simulations/Section5` – Code and results for Section 5 (Applications to Astrophysical Data)
 - `simulations/Appendix_C` - Code and results for Appendix C (Extra numerical Results)

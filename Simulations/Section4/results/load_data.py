@@ -7,21 +7,20 @@ from scipy.interpolate import make_interp_spline
 from matplotlib import rcParams
 import seaborn as sns
 
-# 设置全局样式
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
 sns.set_palette("husl")
 
 
 def parse_filename(filename):
-    """使用正则表达式解析文件名"""
+
     pattern = r"results_n(\d+)_beta([\d._]+)_strue(\w+)_snull(\w+)_strength([\d.]+)_iters([\d.]+)\.xlsx"
     match = re.fullmatch(pattern, filename)
     if not match:
-        raise ValueError(f"文件名格式不匹配: {filename}")
+        raise ValueError(f"Filename does not match: {filename}")
 
-    # 解析beta参数（支持整数和浮点数）
-    beta_str = match.group(2).replace("_", " ")  # 将分隔符统一转为空格
+    # beta
+    beta_str = match.group(2).replace("_", " ")
     beta_values = list(map(float, beta_str.split()))
 
     return {
@@ -35,13 +34,13 @@ def parse_filename(filename):
 
 
 def load_data(target_params,test="one-sided"):
-    """加载符合目标参数的数据"""
+
     if test == "one-sided": # one-sided or two-sided
-        data_dir = "datanew/onesided"
+        data_dir = "data/onesided"
     elif test == "two-sided":
-        data_dir = "datanew/twosided"
+        data_dir = "data/twosided"
     elif test == "time_double":
-        data_dir = "datanewdouble/time"
+        data_dir = "data_double/time"
     else:
         raise ValueError("Invalid test type! Possible types: one-sided, two-sided, time_double.")
     files = Path(data_dir).glob("results_*.xlsx")
@@ -52,16 +51,16 @@ def load_data(target_params,test="one-sided"):
         except ValueError:
             continue
 
-        # 检查参数匹配
+        # param match
         match = all(
             params.get(k) == v
             for k, v in target_params.items()
-            if k != "strue"  and k!="strength"# 特殊处理关系条件
+            if k != "strue"  and k!="strength"
         )
 
         if match:
             df = pd.read_excel(file_path)
-            # 添加关系标记列
+            # is null?
             df["is_null"] = (params["strue"] == params["snull"])
             if params["strue"]==target_params["snull"] or (params["strue"]==target_params["strue"] and params["strength"]==target_params["strength"]):
                 rows.append(df)
@@ -73,10 +72,10 @@ def plot_separate_figures(target_params, save_prefix=None):
 
     def create_prefix(params):
         parts = []
-        for key in params:  # 保持参数原始顺序
+        for key in params:
             value = params[key]
 
-            # 处理不同值类型
+
             if isinstance(value, list):
                 val_str = "_".join(map(str, value))
             elif isinstance(value, float) and value.is_integer():
@@ -84,37 +83,36 @@ def plot_separate_figures(target_params, save_prefix=None):
             else:
                 val_str = str(value)
 
-            # 移除特殊字符并组合
+
             clean_str = f"{key}{val_str}".replace(" ", "").lower()
             parts.append(clean_str)
         return "_".join(parts)
 
-    # 使用自定义前缀或自动生成
+
     final_prefix = save_prefix if save_prefix else create_prefix(target_params)
 
-    """绘制并保存两张优化后的图表"""
-    # 加载数据
+
     full_df = load_data(target_params)
     if full_df.empty:
-        print("没有找到匹配的数据")
+        print("No matches found.")
         return
 
     methods = ['Chisq', 'Plug_in', 'Cond', 'SingleB']
-    colors = sns.color_palette(n_colors=len(methods))  # 固定颜色方案
+    colors = sns.color_palette(n_colors=len(methods))
 
-    # Type I Error 图表 ==============================================
+    # Type I Error ==============================================
     plt.figure(figsize=(8, 6))
     null_df = full_df[full_df["is_null"]].sort_values("alpha")
     min_alpha = null_df["alpha"].min()
     max_alpha = null_df["alpha"].max()
 
     for method, color in zip(methods, colors):
-        # 准备数据
+
         grouped = null_df.groupby("alpha", as_index=False)[method].mean()
         x = grouped["alpha"].values
         y = grouped[method].values
 
-        # 生成平滑曲线
+
         if len(x) > 3:
             x_smooth = np.linspace(x.min(), x.max(), 300)
             spl = make_interp_spline(x, y, k=3)
@@ -122,19 +120,19 @@ def plot_separate_figures(target_params, save_prefix=None):
         else:
             x_smooth, y_smooth = x, y
 
-        # 绘制主曲线
+
         plt.plot(x_smooth, y_smooth,
                  linewidth=2, color=color,
                  label=method, zorder=2)
 
-        # 每隔6个数据点添加标记
-        mask = (grouped.index % 6 == 0)  # 修改这里调整间隔
+
+        mask = (grouped.index % 6 == 0)
         plt.scatter(x[mask], y[mask],
                     color=color, edgecolor='white',
                     s=60, zorder=3, linewidth=0.8,
                     marker='o')
 
-    # 绘制动态参考线
+
     ref_line = np.linspace(min_alpha, max_alpha, 100)
     plt.plot(ref_line, ref_line,
              'k--', alpha=0.5, linewidth=1,
@@ -149,9 +147,9 @@ def plot_separate_figures(target_params, save_prefix=None):
     plt.savefig(f"figure/{final_prefix}_type1_error.png", dpi=300, bbox_inches='tight')
     plt.close()
 
-    # Power 图表 =====================================================
+    # Power  =====================================================
     plt.figure(figsize=(8, 6))
-    # 合并数据
+
     merged = pd.merge(
         full_df[full_df["is_null"]].groupby("alpha")[methods].mean(),
         full_df[~full_df["is_null"]].groupby("alpha")[methods].mean(),
@@ -160,12 +158,12 @@ def plot_separate_figures(target_params, save_prefix=None):
     )
 
     for method, color in zip(methods, colors):
-        # 准备数据
+
         x = merged[f"{method}_null"].values
         y = merged[f"{method}_alt"].values
         alpha_values = merged.index.values
 
-        # 生成平滑曲线（按原始顺序）
+
         if len(x) > 3:
             sort_idx = np.argsort(x)
             x_sorted = x[sort_idx]
@@ -177,19 +175,19 @@ def plot_separate_figures(target_params, save_prefix=None):
         else:
             x_smooth, y_smooth = x, y
 
-        # 绘制主曲线
+
         plt.plot(x_smooth, y_smooth,
                  linewidth=2, color=color,
                  label=method, zorder=2)
 
-        # 每隔6个原始点添加标记
-        mask = (np.arange(len(x)) % 6 == 0)  # 修改这里调整间隔
+
+        mask = (np.arange(len(x)) % 6 == 0)
         plt.scatter(x[mask], y[mask],
                     color=color, edgecolor='white',
                     s=60, zorder=3, linewidth=0.8,
                     marker='s')
 
-    # 绘制参考线
+
     plt.plot(ref_line, ref_line, 'k--',
              alpha=0.5, linewidth=1,
              label='y=x', zorder=1)
@@ -206,12 +204,12 @@ def plot_separate_figures(target_params, save_prefix=None):
     plt.close()
 
 
-# 使用示例
+
 if __name__ == "__main__":
-    # 指定需要固定的参数
+
     target_params = {
         "n": 50,
-        "beta": [5, 1.],  # 自动匹配beta参数
+        "beta": [5, 1.],
         "strue": "brokenpowerlaw",
         "snull": "powerlaw",
         "strength": 3,

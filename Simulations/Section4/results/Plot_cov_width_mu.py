@@ -5,10 +5,10 @@ import numpy as np
 matplotlib.use('TkAgg')
 
 from scipy.stats import chi2
-from Plot_powervs1 import *
-from Plot_cov_width_n_trans import load_data_new
+from Simulations.Section4.results.Plot_powervsalpha import *
+from Plot_cov_width_n import load_data_new
 
-# 设置全局样式
+
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
 sns.set_palette("husl")
@@ -141,7 +141,7 @@ if __name__=='__main__':
 
     target_params = [[{
         "n": i,
-        "beta": [j, 1.],  # 自动匹配beta参数
+        "beta": [j, 1.],
         "strue": "powerlaw",
         "snull": "powerlaw",
         "iters": 3000,
@@ -198,4 +198,4 @@ if __name__=='__main__':
 
 
     plt.tight_layout()
-    plt.savefig(f"figurenew/2x3vsmu_trans_blackcolor_type1.pdf", bbox_inches='tight')
+    plt.savefig(f"figure/2x3vsmu.pdf", bbox_inches='tight')

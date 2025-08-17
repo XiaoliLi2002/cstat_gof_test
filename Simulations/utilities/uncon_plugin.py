@@ -1,6 +1,6 @@
-from utilities import *
-from cumulants import uncon_expectation, uncon_var
-from Likelihood_Design_mat import design_mat
+from Simulations.utilities.utilities import *
+from Simulations.utilities.cumulants import uncon_expectation, uncon_var
+from Simulations.utilities.Likelihood_Design_mat import design_mat
 
 def uncon_plugin_test(x,beta,n,snull,alpha=0.1):
     """

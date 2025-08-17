@@ -29,8 +29,14 @@ cd yourrepo
 
 pip install -r requirements.txt
 
+---
+
+## 🚀 Quick Start
+Example for using our package to test a Powerlaw model:
+
 
 ---
+
 
 ## 📜 Citation
 

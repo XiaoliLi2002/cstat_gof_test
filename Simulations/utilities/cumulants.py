@@ -1,5 +1,6 @@
-from utilities import poisson, np, pd
-from cumulants_high_accuracy import main_calculations
+from Simulations.utilities.utilities import poisson, np, pd
+from Simulations.utilities.cumulants_high_accuracy import main_calculations
+import os
 
 def poisson_dis(mu,i):
     """
@@ -201,9 +202,12 @@ def kapa03(mu,max,epsilon):
     return mu
 '''
 #Calculate cumulants using high-accuracy computation, grid-values and fitted formula
-df1=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~10") # gap: 0.0001
-df2=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~20") # gap: 0.001
-df3=pd.read_excel('poisson_cumulants_results.xlsx',sheet_name="0~100") # gap: 0.01
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(BASE_DIR, "..","utilities","poisson_cumulants_results.xlsx",)
+data_path = os.path.abspath(data_path)
+df1=pd.read_excel(data_path,sheet_name="0~10") # gap: 0.0001
+df2=pd.read_excel(data_path,sheet_name="0~20") # gap: 0.001
+df3=pd.read_excel(data_path,sheet_name="0~100") # gap: 0.01
 
 def kapa1(mu):
     if mu < -1e-5: # mu < 0

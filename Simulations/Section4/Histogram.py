@@ -1,8 +1,8 @@
-from utilities import *
-from Likelihood_Design_mat import LLF, LLF_grad, design_mat
+from Simulations.utilities.utilities import *
+from Simulations.utilities.Likelihood_Design_mat import LLF, LLF_grad, design_mat
 import matplotlib.pyplot as plt
-from cumulants import uncon_expectation, uncon_var
-from Kaastra_M_test import Max_mean, Max_var
+from Simulations.utilities.cumulants import uncon_expectation, uncon_var
+from Simulations.utilities.Kaastra_M_test import Max_mean, Max_var
 import scipy
 
 #np.set_printoptions(threshold=np.inf)
@@ -272,4 +272,4 @@ for l in range(iters):
     plt.title(r'Powerlaw, $n=100,K=10$', fontsize=20)
 
     plt.tight_layout()
-    plt.savefig('results/figurenew/Histogram.pdf')
+    plt.savefig('results/figure/Histogram.pdf')

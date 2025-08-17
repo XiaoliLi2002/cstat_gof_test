@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 
 from scipy.stats import chi2
-from Plot_powervs1 import *
+from Plot_powervsalpha import *
 
-# 设置全局样式
+
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
 sns.set_palette("husl")
@@ -16,7 +16,7 @@ def load_data_new(target_params):
 
     # Load CriticalValue
     #print(target_params)
-    data_dir = "datanew/CriticalValue"
+    data_dir = "data/CriticalValue"
     files = Path(data_dir).glob("results_*.xlsx")
     criticalvalue_loaded_list=[]
     for file_path in files:
@@ -25,7 +25,7 @@ def load_data_new(target_params):
         except ValueError:
             continue
 
-        # 检查参数匹配
+        #
         match = all(
             params.get(k) == v
             for k, v in target_params.items()
@@ -37,7 +37,7 @@ def load_data_new(target_params):
             criticalvalue_loaded_list.append(df)
 
     # Load Width
-    data_dir = "datanew/Width"
+    data_dir = "data/Width"
     files = Path(data_dir).glob("results_*.xlsx")
     width_loaded_list=[]
     for file_path in files:
@@ -184,7 +184,7 @@ if __name__=='__main__':
 
     target_params = [[{
         "n": j,
-        "beta": [i, 1.],  # 自动匹配beta参数
+        "beta": [i, 1.],
         "strue": "powerlaw",
         "snull": "powerlaw",
         "iters": 3000,
@@ -239,4 +239,4 @@ if __name__=='__main__':
 
 
     plt.tight_layout()
-    plt.savefig(f"figurenew/2x3vsn_0.25_trans_blackcolor_type1_to200.pdf", bbox_inches='tight')
+    plt.savefig(f"figure/2x3vsn_to200.pdf", bbox_inches='tight')

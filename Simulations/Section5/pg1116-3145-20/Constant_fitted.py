@@ -1,4 +1,4 @@
-from Real_data.Constant_fit_test import *
+from Simulations.Section5.Constant_fit_test import *
 
 path='countFormat0-segment-0-20.dat'
 path4test='countFormat0-segment-0-20.dat'
@@ -23,11 +23,11 @@ r = generate_s_constant(n, mu_hat)
 Cmin = Cashstat(x, r)
 print(Cmin)
 
-print(HEPGOF.Wilks_Chi2_test.p_value_chi(Cmin, n - len(mu_hat)))
-print(HEPGOF.uncon_plugin.uncon_plugin_test(Cmin, mu_hat, n, snull))
-# print(HEPGOF.bootstrap_normal.bootstrap_asymptotic(Cmin,mu_hat,blockLength,snull))
-print(HEPGOF.con_theory.con_theory_test(Cmin, mu_hat, n, snull))
-print(HEPGOF.bootstrap_empirical.bootstrap_test(Cmin, mu_hat, n, snull))
+print(Simulations.utilities.Wilks_Chi2_test.p_value_chi(Cmin, n - len(mu_hat)))
+print(Simulations.utilities.uncon_plugin.uncon_plugin_test(Cmin, mu_hat, n, snull))
+# print(Simulations.utilities.bootstrap_normal.bootstrap_asymptotic(Cmin,mu_hat,blockLength,snull))
+print(Simulations.utilities.con_theory.con_theory_test(Cmin, mu_hat, n, snull))
+print(Simulations.utilities.bootstrap_empirical.bootstrap_test(Cmin, mu_hat, n, snull))
 
 
 # Plot figure

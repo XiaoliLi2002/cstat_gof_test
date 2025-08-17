@@ -1,5 +1,5 @@
-from utilities import *
-from Likelihood_Design_mat import LLF, LLF_grad
+from Simulations.utilities.utilities import *
+from Simulations.utilities.Likelihood_Design_mat import LLF, LLF_grad
 
 def bootstrap_test(Cmin,beta,n,snull,B=1000, epsilon=1e-5, alpha=0.1):
     """

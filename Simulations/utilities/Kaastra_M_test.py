@@ -1,4 +1,4 @@
-from utilities import math, p_value_norm
+from Simulations.utilities.utilities import math, p_value_norm
 def Max_mean_unit(mu):
     A=-0.56709
     B= -2.7336
