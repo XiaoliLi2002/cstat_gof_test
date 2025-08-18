@@ -34,6 +34,13 @@ pip install -r requirements.txt
 ## 🚀 Quick Start
 Example for using our package to test a Powerlaw model:
 
+`cd HEAGOF`
+
+run `main.py`
+
+This will run our package to test a synthetic powerlaw spectrum with a powerlaw model.
+
+For more details, see `HEAGOF/README.md`.
 
 ---
 
