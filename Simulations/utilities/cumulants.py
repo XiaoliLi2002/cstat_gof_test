@@ -40,16 +40,16 @@ def Sigma_compute(s, Q):
     """
     Q=np.array(Q)
     s = np.asarray(s)
-    # 如果 kapaXX 接受向量输入，就直接调用；否则用 np.vectorize 包装：
+    
     kapa12_s = np.vectorize(kapa12)(s)
     kapa03_s = np.vectorize(kapa03)(s)
     kapa11_s = np.vectorize(kapa11)(s)
 
-    # 计算 sum_j kapa11(s[j]) * Q[j,i] 对每个 i：
+    
     # sums[i] = ∑_j kapa11_s[j] * Q[j, i]
     sums = Q.T @ kapa11_s    # shape (n,)
 
-    # 对角元素：
+    
     diag = kapa12_s - kapa03_s * sums
 
     return np.diag(diag)
@@ -92,7 +92,7 @@ def uncon_expectation(s,n,X,I):
     n,p=X.shape
     for j in range(n):
         E += kapa1(s[j])
-    return max(float(E)-p,0)
+    return float(E)
 
 def uncon_var(s,n,X,I):
     """
