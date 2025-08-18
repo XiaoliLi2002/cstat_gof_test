@@ -16,7 +16,7 @@ This repository contains the package **HEAGOF** and the code, data, and results 
 ---
 
 ## 📂 Structure
-- `package` – the package **HEAGOF**
+- `HEAGOF` – the package **HEAGOF**
 - `simulations` – the code, data, and results for reproducing the simulations in our paper
 
 ---
