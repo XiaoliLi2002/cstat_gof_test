@@ -94,6 +94,25 @@ def uncon_expectation(s,n,X,I):
         E += kapa1(s[j])
     return float(E)
 
+def uncon_expectation_highorder(s,n,X,I):
+    """
+        Compute the unconditional expectation using high-order approximation
+
+        Args:
+            s (array-like, shape (n,)): expected counts
+            n: number of bins
+            X: design matrix
+            I: identity matrix
+
+        Returns:
+            unconditional expectation
+        """
+    E = 0
+    n, p = X.shape
+    for j in range(n):
+        E += kapa1(s[j])
+    return max(float(E)-p,0)
+
 def uncon_var(s,n,X,I):
     """
     Compute the unconditional variance

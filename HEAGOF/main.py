@@ -27,12 +27,12 @@ class HEAGOF_class:
                                 self.label='powerlaw_model'
                                 self.func=self.powerlaw_func
 
-            energy: energy range, 1D array of increasing positive numbers, length is Blocklength+1
+            energy: energy range, 1D array of increasing positive numbers, length is n_total+1
 
-            effective_area: Effective area range, 1D array of positive numbers, length is Blocklength
+            effective_area: Effective area range, 1D array of positive numbers, length is n_total
 
             redistribution_matrix: Redistribution matrix, 2D matrix of positive numbers
-                with shape Blocklength x Blocklength
+                with shape Blocklength x n_total
 
             back_strength: Strength of the background, positive float number
 
@@ -40,10 +40,10 @@ class HEAGOF_class:
         Blocklength, n_total = redistribution_matrix.shape
         if len(data)!=Blocklength:
             raise ValueError('The shape of the redistribution matrix does not match the data!')
-        if n_total!=Blocklength:
-            raise ValueError('The redistribution matrix is not a square matrix!')
+        #if n_total!=Blocklength:
+        #    raise ValueError('The redistribution matrix is not a square matrix!')
         if len(energy)!=(Blocklength+1):
-            raise ValueError('The shape of the energy range must be len(data)+1 !')
+            raise ValueError('The shape of the energy range must be n_total+1 !')
         self.data = data
 
         self.model_label = model.label

@@ -232,7 +232,6 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
-        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
         np.random.seed(seed)
         for i in range(B):
@@ -254,7 +253,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         np.random.seed(seed)
         for i in range(B):
             print(i)
-            x = poisson_data(s2)
+            x = poisson_data(s)
             if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
@@ -312,7 +311,6 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, RMF_test1, Energy, beta, BACK, left, right)
-        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
         np.random.seed(seed)
         for i in range(B):
@@ -334,7 +332,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         np.random.seed(seed)
         for i in range(B):
             print(i)
-            x = poisson_data(s2)
+            x = poisson_data(s)
             if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
@@ -390,7 +388,6 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, RMF_test2, Energy, beta, BACK, left, right)
-        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
         np.random.seed(seed)
         for i in range(B):
@@ -412,7 +409,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         np.random.seed(seed)
         for i in range(B):
             print(i)
-            x = poisson_data(s2)
+            x = poisson_data(s)
             if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),
@@ -469,7 +466,6 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         C = [0 for x in range(B)]
         C2 = [0 for x in range(B)]
         s = RMF_s_powerlaw(ARE, RMF_test3, Energy, beta, BACK, left, right)
-        s2 = RMF_s_powerlaw(ARE, I, Energy, beta, BACK, left, right)
 
         np.random.seed(seed)
         for i in range(B):
@@ -491,7 +487,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         np.random.seed(seed)
         for i in range(B):
             print(i)
-            x = poisson_data(s2)
+            x = poisson_data(s)
             if np.all(np.abs(x) < 1e-5):
                 continue
             xopt = opt.minimize(LLF2, beta, args=(x, ARE, I, Energy, BACK, left, right),

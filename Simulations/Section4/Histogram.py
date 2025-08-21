@@ -1,7 +1,7 @@
 from Simulations.utilities.utilities import *
 from Simulations.utilities.Likelihood_Design_mat import LLF, LLF_grad, design_mat
 import matplotlib.pyplot as plt
-from Simulations.utilities.cumulants import uncon_expectation, uncon_var
+from Simulations.utilities.cumulants import uncon_expectation_highorder, uncon_var
 from Simulations.utilities.Kaastra_M_test import Max_mean, Max_var
 import scipy
 
@@ -48,7 +48,7 @@ for l in range(iters):
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
-    expec=uncon_expectation(s,n,X,I)
+    expec=uncon_expectation_highorder(s,n,X,I)
     std = math.sqrt(uncon_var(s,n,X,I))
 
     C = np.zeros(B)
@@ -108,7 +108,7 @@ for l in range(iters):
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
-    expec=uncon_expectation(s,n,X,I)
+    expec=uncon_expectation_highorder(s,n,X,I)
     std = math.sqrt(uncon_var(s,n,X,I))
 
     C = np.zeros(B)
@@ -168,7 +168,7 @@ for l in range(iters):
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
-    expec=uncon_expectation(s,n,X,I)
+    expec=uncon_expectation_highorder(s,n,X,I)
     std = math.sqrt(uncon_var(s,n,X,I))
 
     C = np.zeros(B)
@@ -223,7 +223,7 @@ for l in range(iters):
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
-    expec=uncon_expectation(s,n,X,I)
+    expec=uncon_expectation_highorder(s,n,X,I)
     std = math.sqrt(uncon_var(s,n,X,I))
 
     C = np.zeros(B)

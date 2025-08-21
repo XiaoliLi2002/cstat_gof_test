@@ -1,0 +1,6 @@
+mpmath
+pandas
+numpy
+scipy
+statistics
+openpyxl
