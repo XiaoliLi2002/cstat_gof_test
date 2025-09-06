@@ -21,9 +21,9 @@ This will:
 - Run the script
 - Save the figures to `results/figure/` or directly print the computational time.
 
-3. Run: `results/Plot_cov_width_mu_Gamma1.py` (Figure 10), `results/Plot_cov_width_n_Gamma1.py` (Figure 11), `results/Plot_3x3figure_Gamma1.py` (Figure 12).
+3. Run: `Simulations/Section4/Histogram.py` (Figure 9 with Gamma=1), `results/Plot_cov_width_mu_Gamma1.py` (Figure 10), `results/Plot_cov_width_n_Gamma1.py` (Figure 11), `results/Plot_3x3figure_Gamma1.py` (Figure 12).
 This will:
-- Load the data from `results/data_double/`
+- Load the data from `results/data/`
 - Run the script
 - Save the figures to `results/figure/`
 
