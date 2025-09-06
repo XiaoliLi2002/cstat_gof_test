@@ -79,27 +79,22 @@ def Sigma_diag(s,i,Q,n,max):
         x-=kapa11(s[j],max)*Q[j,i]/s[j]*kapa03(s[i])/s[i]**3
     return x
 
-def expectation(s,n,X,I,max):
-    V = np.diag([1/s[i] for i in range(n)])
-    #print(V)
-    Q = X * (X.T * V * X) ** (-1) * X.T
-    Sigma = np.diag([Sigma_diag(s, i, Q, n,max) for i in range(n)])
-    E = -0.5*np.trace(X.T * Sigma * X * (X.T * V * X) ** (-1))
+def expectation(s,n,X,I,maximum):
+    n,p=X.shape
+    E=0
     for i in range(n):
-        E += kapa1(s[i],max)
-    print(E)
-    return float(E)
+        E += kapa1(s[i],maximum)
+    print(E-p)
+    return max(float(E)-p,0)
 
 def Var(s,n,X,I,max):
-    p=np.shape(X)[1]
+    n,p=np.shape(X)
     print(p)
-    V = np.diag([1/s[i] for i in range(n)])
-    k_11 = np.matrix([kapa11(s[i],max)/s[i] for i in range(n)]).T
-    var = (-k_11.T * X * (X.T * V * X) ** (-1) * X.T * k_11)[0, 0]
+    var=0
     for i in range(n):
         var += kapa2(s[i],max)
-    print(math.sqrt((1-p/n)*var))
-    return (1-p/n)*var
+    print(math.sqrt(var))
+    return var
 
 def kapa1(mu,max):
     x = 0
@@ -274,9 +269,9 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF', alpha=0.5)
-        plt.xlabel('C-stat', fontsize=18)
-        plt.ylabel('Density', fontsize=18)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.xlabel(f'$C$ statistics', fontsize=24)
+        plt.ylabel('Density', fontsize=24)
 
         x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
@@ -292,19 +287,21 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         std = math.sqrt(Var(s, n, X, I, maximum))
         x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
         y = normfun(x, mean, std)
-        plt.plot(x, y, color='cyan', marker='v',markevery=100, label='Alg.3b,RMF')
+        plt.plot(x, y, color='cyan', marker='v',markevery=100, label='Alg.2c,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF', alpha=0.5)
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
         plt.plot(x, y, color='green', label='Alg.2b,noRMF')
 
-        plt.legend(fontsize=15)
+        plt.legend(fontsize=20)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
-        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=I$' % (n, int(beta[0] / n), beta[1]), fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\Gamma=%d,R=I$' % (n, int(beta[0] / n), beta[1]), fontsize=24)
 
         plt.subplot(2, 2, 2)
         I = np.eye(n)
@@ -352,9 +349,11 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         plt.plot(x, y, color='purple', label='Alg.1')
 
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF',alpha=0.5)
-        plt.xlabel('C-stat', fontsize=18)
-        plt.ylabel('Density', fontsize=18)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
+        plt.xlabel(f'$C$ statistics', fontsize=24)
+        plt.ylabel('Density', fontsize=24)
 
         x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
@@ -370,9 +369,9 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         std = math.sqrt(Var(s, n, X, I, maximum))
         x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
         y = normfun(x, mean, std)
-        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.2c,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF',alpha=0.5)
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2), 0.05)
         y = normfun(x, statistics.mean(C2), statistics.stdev(C2))
@@ -381,7 +380,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
  #       plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
-        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=D$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\Gamma=%d,R=D$'%(n,int(beta[0]/n),beta[1]), fontsize=24)
 
         plt.subplot(2, 2, 3)
         I=np.eye(n)
@@ -430,9 +429,11 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF',alpha=0.5)
-        plt.xlabel('C-stat', fontsize=18)
-        plt.ylabel('Density', fontsize=18)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF',alpha=0.5)
+        plt.xlabel(f'$C$ statistics', fontsize=24)
+        plt.ylabel('Density', fontsize=24)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
 
         x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
@@ -448,9 +449,9 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         std = math.sqrt(Var(s, n, X, I, maximum))
         x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
         y = normfun(x, mean, std)
-        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.2c,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF',alpha=0.5)
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF',alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
@@ -459,7 +460,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 
 #        plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
-        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=\frac{(11^\top+nI)}{2n}$'%(n,int(beta[0]/n),beta[1]), fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\Gamma=%d,R=\frac{(11^\top+nI)}{2n}$'%(n,int(beta[0]/n),beta[1]), fontsize=24)
 
         plt.subplot(2, 2, 4)
         I = np.eye(n)
@@ -508,9 +509,11 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 
         bins = np.linspace(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C),
                            50)
-        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4a,RMF', alpha=0.5)
-        plt.xlabel('C-stat', fontsize=18)
-        plt.ylabel('Density', fontsize=18)
+        plt.hist(C, bins, rwidth=0.9, density=True, color='cornflowerblue', label='Alg.4,RMF', alpha=0.5)
+        plt.xlabel(f'$C$ statistics', fontsize=24)
+        plt.ylabel('Density', fontsize=24)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
 
         x = np.arange(statistics.mean(C) - 3 * statistics.stdev(C), statistics.mean(C) + 3 * statistics.stdev(C), 0.05)
         y = normfun(x, statistics.mean(C), statistics.stdev(C))
@@ -527,9 +530,9 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         std = math.sqrt(Var(s, n, X, I, maximum))
         x = np.arange(mean - 3 * std, mean + 3 * std, 0.05)
         y = normfun(x, mean, std)
-        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.3b,RMF')
+        plt.plot(x, y, color='cyan', marker='v', markevery=100, label='Alg.2c,RMF')
 
-        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4a,noRMF', alpha=0.5)
+        plt.hist(C2, bins, rwidth=0.9, density=True, color='orange', label='Alg.4,noRMF', alpha=0.5)
 
         x = np.arange(statistics.mean(C2) - 3 * statistics.stdev(C2), statistics.mean(C2) + 3 * statistics.stdev(C2),
                       0.05)
@@ -539,11 +542,11 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
 #        plt.legend(fontsize=15)
         plt.grid(linestyle='--', alpha=0.5)
         # plt.show()
-        plt.title(r'$n=%d,\frac{K}{n}=%d,\alpha=%d,R=11^\top$' % (n, int(beta[0] / n), beta[1]),
-                  fontsize=18)
+        plt.title(r'$n=%d,\frac{K}{n}=%d,\Gamma=%d,R=11^\top$' % (n, int(beta[0] / n), beta[1]),
+                  fontsize=24)
 
         plt.tight_layout()
-        plt.savefig('results/figure/RMFvsnoRMF.pdf')
+        plt.savefig(f'results/figure/RMFvsnoRMF,mu={round(beta[0]/n)},n={n},Gamma={round(beta[1])}.pdf')
 
 B=1000
 n_test=50
@@ -555,7 +558,7 @@ RMF_test1[n_test-1,n_test-1]+=0.1
 RMF_test2=np.matrix([ [.5 for l in range(n_test) ] for k in range(n_test)])/n_test+0.5*np.eye(n_test)
 RMF_test3=np.matrix(np.ones(n_test)).T@np.matrix(np.ones(n_test))
 Energy_test=np.array([1.+i/n_test for i in range(n_test+1)])
-beta_test=np.array([5*n_test,1])
+beta_test=np.array([10*n_test,3])
 #beta_test=np.array([2.,1])
 iters_test=1
 seed=42
