@@ -116,6 +116,8 @@ def goodness_of_fit(model=HEAGOF_class(),method='theory'):
         model.pvalue=HEAGOF.utilities.uncon_plugin.uncon_plugin_test(model)[0]
     elif method=='theory':
         model.pvalue=HEAGOF.utilities.con_theory.con_theory_test(model)[0]
+    elif method=='theory_high_order':
+        model.pvalue = HEAGOF.utilities.con_theory.con_theory_test_high_order(model)[0]
     elif method=='bootstrap':
         model.pvalue=HEAGOF.utilities.bootstrap_empirical.bootstrap_test(model, Cmin=model.cashstat, thetahat=model.thetahat,B=1000)[0]
     elif method=='bootstrap_double':

@@ -73,7 +73,7 @@ def expectation(s,n,X,I):
         E += kapa1(s[i])
     return float((1-p/n)*E)
 
-def con_expectation(s,n,X,I):
+def expectation_high_order(s,n,X,I):
     """
         Compute the conditional expectation accurately
 
