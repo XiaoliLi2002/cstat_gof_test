@@ -10,15 +10,24 @@ def single_test_with_single_bootstrap_pvalue(n,beta,strue,snull,iters,B=1000,eps
     s = generate_s_true(n, beta, strue, snull, loc=loc, strength=strength,
                         width=width)  # ground-truth. loc, strength & width are used for brokenpowerlaw, spectral line.
     print(s)
+    print(np.mean(s))
     pvalues_onesided=np.ones((iters,4))  # totally 4 methods, if strue=snull: Type I Error; if strue!=snull: Power
     pvalues_twosided = np.ones((iters, 4))  # totally 4 methods, if strue=snull: Type I Error; if strue!=snull: Power
     times=np.zeros((iters, 4))
+    betahat = None
+    Cmin = None
 
     CashCritical_onesided = np.zeros((iters, 4))
     Width_twosided = np.zeros((iters, 4))
     significance_level=0.1
 
     for i in range(int(iters)):  # repetition
+        if (i-5)%300==0:
+            print(f"Iteration {i} finished!")
+            print(f"Time used: {time.time()-inital_time}")
+            print(f"Estimated total time: {(time.time()-inital_time)*iters/i}")
+            print(f"Results from last iteration: beta={betahat}, Cmin={Cmin}, Onesided pvalues: {pvalues_onesided[i-1]}, Critical Values: {CashCritical_onesided[i-1]}\n")
+
 
         x = poisson_data(s)
         if np.all(np.abs(x) < 1e-5):  # x==0, always accept
@@ -29,13 +38,6 @@ def single_test_with_single_bootstrap_pvalue(n,beta,strue,snull,iters,B=1000,eps
         # print(betahat)
         r = generate_s(n, betahat, snull)  # null-distribution
         Cmin = Cashstat(x, r)
-
-        if (i-5)%300==0:
-            print(f"Iteration {i} finished!")
-            print(f"Time used: {time.time()-inital_time}")
-            print(f"Estimated total time: {(time.time()-inital_time)*iters/i}\n")
-            print(f"Results from last iteration: beta={betahat}, Cmin={Cmin}, Onesided pvalues: {pvalues_onesided[i-1]}")
-
 
         # start test
         time_now=time.time()
@@ -103,12 +105,12 @@ if __name__=="__main__":
     '''
 
     # params
-    n = 500  # number of bins
+    n = 100  # number of bins
     B = 300
-    beta = np.array([0.25, 1])  # ground-truth beta*
+    beta = np.array([5, 3])  # ground-truth beta*
     strue = 'powerlaw'  # true s : powerlaw/ brokenpowerlaw/ spectral_line
     snull = 'powerlaw'  # s of H_0 : powerlaw
-    loc, strength, width = [0.5, 3, int(0.1*n)]  # For broken-powerlaw and spectral line
+    loc, strength, width = [0.1, 3, int(0.1*n)]  # For broken-powerlaw and spectral line
     iters = 3000  # repetition times, suppose p=0.1. Then CI = +-0.01 (3k), +-0.02 (1k). p=0.25, then CI = +-0.015 (3k). p=0.5, CI = +-0.02( 3k)
     np.random.seed(0)  # random seed
 

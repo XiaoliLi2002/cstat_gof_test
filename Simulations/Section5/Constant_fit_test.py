@@ -58,11 +58,11 @@ if __name__=="__main__":
         Cmin=Cashstat(x,r)
         print(Cmin)
 
-        print(Simulations.utilities.Wilks_Chi2_test.p_value_chi(Cmin,blockLength-len(mu_hat)))
-        print(Simulations.utilities.uncon_plugin.uncon_plugin_test(Cmin,mu_hat,blockLength,snull))
-        #print(Simulations.utilities.bootstrap_normal.bootstrap_asymptotic(Cmin,mu_hat,blockLength,snull))
-        print(Simulations.utilities.con_theory.con_theory_test(Cmin,mu_hat,blockLength,snull))
-        print(Simulations.utilities.bootstrap_empirical.bootstrap_test(Cmin,mu_hat,blockLength,snull))
+        print(Simulations.utilities.Wilks_Chi2_test.p_value_chi(Cmin,blockLength-len(mu_hat))[0])
+        print(Simulations.utilities.uncon_plugin.uncon_plugin_test(Cmin,mu_hat,blockLength,snull)[0])
+        #print(Simulations.utilities.bootstrap_normal.bootstrap_asymptotic(Cmin,mu_hat,blockLength,snull)[0)
+        print(Simulations.utilities.con_theory.con_theory_test(Cmin,mu_hat,blockLength,snull)[0])
+        print(Simulations.utilities.bootstrap_empirical.bootstrap_test(Cmin,mu_hat,blockLength,snull)[0])
 
 # (b) Since the exposure times of observations are different, normalize by exposure times
     EXPTIMES=[8.805e+04,2.674e+05]

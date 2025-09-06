@@ -60,7 +60,7 @@ def load_data_new(target_params):
     return np.stack(criticalvalue_loaded_list).squeeze(), np.stack(width_loaded_list).squeeze()
 
 def plot_covvsn_single(df,mu,alpha=0.10):
-    method_names = [r'LR-$\chi^2$ test', r'Naive Z-test', r'Corrected Z-test', r'Parametric Bootstrap']
+    method_names = [r'Alg.1: LR-$\chi^2$ test', r'Alg.2c: Naive Z-test', r'Alg.3b: Corrected Z-test', r'Alg.4: Param. Bootstrap']
     colors = ["#F0E442", "#D55E00", "black", "#56B4E9"]  # color
     markers=["s", "o", "x", "v"]
 
@@ -68,23 +68,27 @@ def plot_covvsn_single(df,mu,alpha=0.10):
         plt.plot(n_params, df[:,i], label=method_names[i], color=colors[i], marker=markers[i], alpha=0.8)
 
 
-    plt.ylim((-0.02,max(0.22,df.max()+0.05)))
+    plt.ylim((-0.02,max(0.37,df.max()+0.05)))
     #plt.xlim((7,500))
-    plt.xlim((7,250))
+    plt.xlim((7,500))
     plt.xscale("log")
-    #xtick_labels=["10","25","50","100","200","","400"]
-    xtick_labels = ["10", "25", "50", "100", "200"]
+    xtick_labels=["10","25","50","100","200","","400"]
+    #xtick_labels = ["10", "25", "50", "100", "200"]
+    if mu==0.25:
+        xtick_labels=["0.9375","2.34375","4.6875","9.375","18.75","","37.5"]
+    elif mu==2.5:
+        xtick_labels = ["9.375", "23.4375", "46.875", "93.75", "187.5", "", "375"]
     plt.xticks(n_params, xtick_labels)
     ref_line = np.linspace(7, 500, 100)
     plt.plot(ref_line, (alpha) * np.ones(len(ref_line)),
              'k--', alpha=0.5, linewidth=1,
              zorder=1)
-    plt.title(f'$K={mu}$')
+    plt.title(f'Powerlaw, $K={mu},\Gamma=3, n\in[10,400]$')
 
     plt.grid(True, alpha=0.3)
 
-def plot_cricvsn_single(df,alpha=0.10):
-    method_names = [r'LR-$\chi^2$ test', r'Naive Z-test', r'Corrected Z-test', r'Parametric Bootstrap']
+def plot_cricvsn_single(df,mu,alpha=0.10):
+    method_names = [r'Alg.1: LR-$\chi^2$ test', r'Alg.2c: Naive Z-test', r'Alg.3b: Corrected Z-test', r'Alg.4: Param. Bootstrap']
     colors = ["#F0E442", "#D55E00", "black", "#56B4E9"]  # color
     markers = ["-s", "-o", "-x", "-v"]
 
@@ -101,17 +105,21 @@ def plot_cricvsn_single(df,alpha=0.10):
             plt.errorbar(n_params,average,yerr=errorlimit,fmt=markers[i], alpha=0.8,capsize=5,color=colors[i])
 
     # plt.xlim((7,500))
-    plt.xlim((7, 250))
+    plt.xlim((7, 500))
     plt.xscale("log")
-        # xtick_labels=["10","25","50","100","200","","400"]
-    xtick_labels = ["10", "25", "50", "100", "200"]
+    xtick_labels = ["10", "25", "50", "100", "200", "", "400"]
+    # xtick_labels = ["10", "25", "50", "100", "200"]
+    if mu == 0.25:
+        xtick_labels = ["0.9375", "2.34375", "4.6875", "9.375", "18.75", "", "37.5"]
+    elif mu == 2.5:
+        xtick_labels = ["9.375", "23.4375", "46.875", "93.75", "187.5", "", "375"]
     plt.xticks(n_params, xtick_labels)
     #plt.yticks(n_params, xtick_labels)
 
     plt.grid(True, alpha=0.3)
 
-def plot_widthvsn_single(df,alpha=0.10):
-    method_names = [r'LR-$\chi^2$ test', r'Naive Z-test', r'Corrected Z-test', r'Parametric Bootstrap']
+def plot_widthvsn_single(df,mu,alpha=0.10):
+    method_names = [r'Alg.1: LR-$\chi^2$ test', r'Alg.2c: Naive Z-test', r'Alg.3b: Corrected Z-test', r'Alg.4: Param. Bootstrap']
     colors = ["#F0E442", "#D55E00", "black", "#56B4E9"]  # color
     markers = ["-s", "-o", "-x", "-v"]
 
@@ -129,6 +137,11 @@ def plot_widthvsn_single(df,alpha=0.10):
     plt.xscale("log")
     #plt.yscale("log")
     xtick_labels = ["10", "25", "50", "100", "200", "", "400"]
+    # xtick_labels = ["10", "25", "50", "100", "200"]
+    if mu == 0.25:
+        xtick_labels = ["0.9375", "2.34375", "4.6875", "9.375", "18.75", "", "37.5"]
+    elif mu == 2.5:
+        xtick_labels = ["9.375", "23.4375", "46.875", "93.75", "187.5", "", "375"]
     plt.xticks(n_params, xtick_labels)
     #plt.yticks(n_params, xtick_labels)
 
@@ -152,39 +165,39 @@ if __name__=='__main__':
         ]
     )
 
-    type1error3=np.array(  # type I error at beta1=0.1 mu=0.25
+    type1error3=np.array(  # type I error at mu=0.25
         [
-            [0.00133,	0.00133,	0.03833,	0.03],
-            [0,	0.00467	,0.08333,	0.021],
-            [0,	0.00367	,0.09667,	0.01333],
-            [0,	0.00267,	0.10267,	0.00867],
-            [0,0.00133,	0.10467,	0.00533],
-            #[0,	0.00067,	0.10567	,0.002],
-            #[0,	0.002,	0.113,	0.003]
+            [0,	0,	0.01667,	0.01233],
+            [0,	0.00133,	0.05567,	0.006],
+            [0,	0.00033,	0.084,	0.002],
+            [0,	0,	0.10667,	0],
+            [0,	0,	0.098,	0],
+            [0,	0,	0.10367,	0],
+            [0,	0,	0.107,	0]
         ]
     )
 
-    type1error2=np.array(  # type I error at beta1=2.5 mu=0.25
+    type1error2=np.array(  # type I error at mu=2.5
         [
-            [0.15867,	0.04267,	0.09033,	0.105],
-            [0.20533,	0.06067,	0.094,	0.1],
-            [0.26567,	0.06333,	0.09167,	0.09367],
-            [0.38667,	0.07767,	0.09967,	0.09833],
-            [0.56333,	0.092,	0.10333,	0.10333],
-            #[0.699,	0.085,	0.09967,	0.09667],
-            #[0.78767,	0.09033,	0.10133,	0.10333]
+            [0.05867,	0.028,	0.07367,	0.1],
+            [0.085,	0.051,	0.09867,	0.10567],
+            [0.10767,	0.07,	0.108,	0.108],
+            [0.138,	0.07233,	0.105,	0.10233],
+            [0.20667,	0.08533,	0.108,	0.102],
+            [0.244,	0.082,	0.10367,	0.095],
+            [0.30533,	0.085,	0.10233,	0.099]
         ]
     )
 
     # Params, alpha=0.10
-    #n_params = np.array([10, 25, 50, 100, 200, 300, 400])
-    n_params = np.array([10, 25, 50, 100, 200])
+    n_params = np.array([10, 25, 50, 100, 200, 300, 400])
+    #n_params = np.array([10, 25, 50, 100, 200])
     beta1_params = np.array([0.25, 2.5])
     alpha=0.1
 
     target_params = [[{
         "n": j,
-        "beta": [i, 1.],
+        "beta": [i, 3.],  # 自动匹配beta参数
         "strue": "powerlaw",
         "snull": "powerlaw",
         "iters": 3000,
@@ -228,8 +241,9 @@ if __name__=='__main__':
         if i == 0:
             plt.ylabel(r"Critical Value / $n$", fontsize=16)
             #plt.title(r"Critical Value")
-        plt.xlabel(r"Number of Bins $(n)$", fontsize=16)
-        plot_cricvsn_single(criticalvalues[i],alpha)
+        #plt.xlabel(r"Number of Bins $(n)$", fontsize=16)
+        plt.xlabel(f"Total Expected Counts $s_+$", fontsize=16)
+        plot_cricvsn_single(criticalvalues[i],mu=beta1_params[i],alpha=0.1)
 
         # width vs n
         #plt.subplot(2, 3, i * 3 + 3)
@@ -239,4 +253,4 @@ if __name__=='__main__':
 
 
     plt.tight_layout()
-    plt.savefig(f"figure/2x3vsn_to200.pdf", bbox_inches='tight')
+    plt.savefig(f"figure/Figure3_Gamma=3.pdf", bbox_inches='tight')

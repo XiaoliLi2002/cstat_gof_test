@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 from Simulations.Section4.results.load_data import *
-
+from Simulations.utilities.utilities import generate_s
 
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
@@ -50,14 +50,14 @@ def format_params(params):
 def plot_1vsalpha_single(target_params, save_prefix=None, test='one-sided'):
     full_df = load_data(target_params,test=test)
     if full_df.empty:
-        print("No matches found!")
+        print("No Matching Data!")
         return
 
     methods = ['Chisq', 'Plug_in', 'Cond', 'SingleB']
-    method_names = [r'LR-$\chi^2$ test', r'Naive Z-test', r'Corrected Z-test', r'Parametric Bootstrap']
+    method_names = [r'Alg.1: LR-$\chi^2$ test', r'Alg.2c: Naive Z-test', r'Alg.3b: Corrected Z-test', r'Alg.4: Param. Bootstrap']
     colors = ["#F0E442", "#D55E00", "black", "#56B4E9"]  # color
 
-    # Type I Error ==============================================
+    # Type I Error  ==============================================
     null_df = full_df[full_df["is_null"]].sort_values("alpha")
     min_alpha = null_df["alpha"].min()
     max_alpha = null_df["alpha"].max()
@@ -90,13 +90,15 @@ def plot_1vsalpha_single(target_params, save_prefix=None, test='one-sided'):
         #            marker=marker)
 
 
+    s=generate_s(target_params['n'],target_params['beta'],target_params['snull'])
     #plt.xlabel("Significance level (α)")
-    plt.title(f"$K={target_params['beta'][0]}$",fontsize=16)
+    plt.title(f"$n={target_params['n']},K={target_params['beta'][0]},\Gamma={round(target_params['beta'][1])},s_+={round(np.sum(s))}$",fontsize=18)
     #plt.title(f"$\mu={target_params['beta'][0]}$, $k={target_params['beta'][1]}$", fontsize=14, pad=20)
     ref_line = np.linspace(min_alpha, max_alpha, 100)
     plt.plot(ref_line, ref_line,
              'k--', alpha=0.5, linewidth=1,
              zorder=1)
+    plt.yticks(fontsize=18)
 
     plt.grid(True, alpha=0.3)
 

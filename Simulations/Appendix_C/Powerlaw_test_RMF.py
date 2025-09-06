@@ -9,7 +9,7 @@ from scipy.stats import nbinom
 import scipy.optimize as opt
 import scipy
 import time
-np.set_printoptions(threshold=np.inf)
+
 
 def func(x,theta):  # Powerlaw model
     return theta[0]*x**(-theta[1])
@@ -22,7 +22,7 @@ def RMF_si_powerlaw(ARE,RMF,Energy,i,theta,BACK=0.,left=0,right=0): #len(Energy)
 
 def RMF_s_powerlaw(ARE,RMF,Energy,theta,BACK=0.,left=0,right=0):
     n=len(ARE)-left-right
-    s=[0 for i in range(n)]
+    s=np.zeros(n)
     for i in range(n):
         s[i]=RMF_si_powerlaw(ARE,RMF,Energy,i,theta,BACK,left,right)
     return s
@@ -99,7 +99,7 @@ def expectation(s,n,X,I,max):
 def Var(s,n,X,I,max):
     p=len(I)
     V = np.diag([1/s[i] for i in range(n)])
-    k_11 = np.mat([kapa11(s[i],max)/s[i] for i in range(n)]).T
+    k_11 = np.matrix([kapa11(s[i],max)/s[i] for i in range(n)]).T
     var = (-k_11.T * X * (X.T * V * X) ** (-1) * X.T * k_11)[0, 0]
     for i in range(n):
         var += kapa2(s[i],max)
@@ -164,7 +164,7 @@ def bootstrap_test(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B=1000):
         x = poisson_data(s)
         if x==[0 for i in range(n)]:
             continue
-        xopt = opt.minimize(LLF, [beta[0], beta[1]], args=(x, ARE, RMF, Energy, BACK, left, right),
+        xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF, Energy, BACK, left, right),
                             bounds=([[1e-5, 30*n_test], [-50, 10]]))
         theta_hat = xopt['x']
         r = RMF_s_powerlaw(ARE, RMF, Energy, theta_hat, BACK, left, right)
@@ -187,7 +187,7 @@ def bootstrap_CAN(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B=1000):
         x = poisson_data(s)
         if x == [0 for i in range(n)]:
             continue
-        xopt = opt.minimize(LLF, [beta[0], beta[1]], args=(x, ARE, RMF, Energy, BACK, left, right),
+        xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF, Energy, BACK, left, right),
                             bounds=([[1e-5, 30*n_test], [-50, 10]]))
         theta_hat = xopt['x']
         r = RMF_s_powerlaw(ARE, RMF, Energy, theta_hat, BACK, left, right)
@@ -201,15 +201,15 @@ def bootstrap_CAN(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B=1000):
     return p_value_norm(Cmin, statistics.mean(C), statistics.stdev(C))
 
 def double_boostrap(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B1=1000,B2=1000):
-    C=[0 for x in range(B1)]
-    pvalue=[0 for x in range(B1)]
+    C=np.zeros(B1)
+    pvalue=np.zeros(B1)
     for i in range(B1):
         s=RMF_s_powerlaw(ARE, RMF, Energy, beta, BACK, left, right)
         x=poisson_data(s)
         if x == [0 for j in range(n)]:
             pvalue[i]=1.
             continue
-        xopt = opt.minimize(LLF, [beta[0], beta[1]], args=(x, ARE, RMF, Energy, BACK, left, right),
+        xopt = opt.minimize(LLF, beta, args=(x, ARE, RMF, Energy, BACK, left, right),
                             bounds=([[1e-5, 30*n_test], [-50, 10]]))
         theta_hat = xopt['x']
         r = RMF_s_powerlaw(ARE, RMF, Energy, theta_hat, BACK, left, right)
@@ -231,30 +231,10 @@ def double_boostrap(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B1=1000,B2
             l+=1
     return l/B1
 
-def bootstrap_bias(Cmin,beta,n,ARE,RMF,Energy,BACK=0.,left=0,right=0,B1=1000,B2=1000):
-    theta1_hat=beta[0]
-    theta2_hat=beta[1]
-    theta1_tilde=[0 for x in range(B1)]
-    theta2_tilde=[0 for x in range(B1)]
-    s=RMF_s_powerlaw(ARE, RMF, Energy, beta, BACK, left, right)
-    for i in range(B1):
-        x = poisson_data(s)
-        if x == [0 for i in range(n)]:
-            continue
-        xopt = opt.minimize(LLF, [beta[0], beta[1]], args=(x, ARE, RMF, Energy, BACK, left, right),
-                            bounds=([[1e-5, 30*n_test], [-50, 10]]))
-        theta1_tilde[i] = xopt['x'][0]
-        theta2_tilde[i] = xopt['x'][1]
-    theta1_adj=2*theta1_hat-np.mean(theta1_tilde)
-    if theta1_adj<=1e-7:
-        theta1_adj=0
-    theta2_adj = 2 * theta2_hat - np.mean(theta2_tilde)
-    return bootstrap_test(Cmin,[theta1_adj,theta2_adj],n,B2)
-
 def design_mat(ARE,RMF,Energy,theta,left=0,right=0):
     n=len(ARE)-left-right
     p=len(theta)
-    X=np.mat([ [0. for l in range(p)] for k in range(n) ])
+    X=np.matrix(np.zeros((n,p)))
     for k in range(n):
         X[k,0]=RMF_si_powerlaw(ARE,RMF,Energy,k,theta,BACK=0,left=left,right=right)/theta[0]
         for l in range(len(ARE)):
@@ -263,7 +243,7 @@ def design_mat(ARE,RMF,Energy,theta,left=0,right=0):
 
 def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
     p=len(beta)
-    I=np.mat([1. for i in range(p)]).T
+    I=np.matrix([1. for i in range(p)]).T
 
     reject1 = [0 for y in range(iters)]  # chi2
     reject2 = [0 for y in range(iters)]  # CANB
@@ -282,7 +262,7 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         x = poisson_data(s)
         if x == [0 for i in range(n)]:
             continue
-        xopt = opt.minimize(LLF, [beta[0], beta[1]],args=(x,ARE,RMF,Energy,BACK,left,right),bounds=([[1e-5, 30*n_test], [-50, 10]]))
+        xopt = opt.minimize(LLF, beta,args=(x,ARE,RMF,Energy,BACK,left,right),bounds=([[1e-5, 30*n_test], [-50, 10]]))
         theta_hat=xopt['x']
         print(theta_hat)
         r = RMF_s_powerlaw(ARE,RMF,Energy,theta_hat,BACK,left,right)
@@ -319,10 +299,10 @@ def test(n,B,B1,B2,beta,iters,ARE,RMF,Energy,BACK=0.,left=0,right=0):
         #end = time.time()
         #print('double b', end - start)
     print(np.mean(reject1), np.mean(reject2), np.mean(reject3), np.mean(reject4), np.mean(reject5), np.mean(reject6))
-    result=[np.mean(reject1), np.mean(reject2), np.mean(reject3), np.mean(reject4), np.mean(reject5), np.mean(reject6)]
-    file1=open('result.txt','a')
-    print(result,file=file1)
-    file1.close()
+    #result=[np.mean(reject1), np.mean(reject2), np.mean(reject3), np.mean(reject4), np.mean(reject5), np.mean(reject6)]
+    #file1=open('result.txt','a')
+    #print(result,file=file1)
+    #file1.close()
 
 def LLF(theta,x,ARE,RMF,Energy,BACK=0,left=0,right=0):
     n = len(x)
@@ -346,7 +326,7 @@ ARE_test=np.array([1 for i in range(n_test)])
 RMF_test=0.8*np.eye(n_test)+tridiag_mat(n_test,1,0.1)+tridiag_mat(n_test,1,0.1).T
 RMF_test[0,0]+=0.1
 RMF_test[n_test-1,n_test-1]+=0.1
-RMF_test2=np.mat([ [.5 for l in range(n_test) ] for k in range(n_test)])/n_test+0.5*np.eye(n_test)
+RMF_test2=0.5*(np.ones((n_test,n_test))/n_test+np.eye(n_test))
 Energy_test=np.array([1.+i/n_test for i in range(n_test+1)])
 beta_test=np.array([5*n_test,1.])
 iters_test=100

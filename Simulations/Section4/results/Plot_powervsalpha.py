@@ -1,4 +1,4 @@
-from Plot_1valpha import *
+from Simulations.Section4.results.Plot_1valpha import *
 
 
 rcParams['font.family'] = 'serif'
@@ -9,7 +9,7 @@ sns.set_palette("husl")
 def plot_powervsalpha_single(target_params, save_prefix=None, test='one-sided'):
     full_df = load_data(target_params,test=test)
     if full_df.empty:
-        print("No Matches Found!")
+        print("No Matching Data!")
         return
 
     methods = ['Chisq', 'Plug_in', 'Cond', 'SingleB']
@@ -53,6 +53,7 @@ def plot_powervsalpha_single(target_params, save_prefix=None, test='one-sided'):
     plt.plot(ref_line, ref_line,
              'k--', alpha=0.5, linewidth=1,
              label='y=x', zorder=1)
+    plt.yticks(fontsize=18)
 
     #plt.xlabel("Significance level (α)")
     #plt.ylabel("Power")

@@ -9,7 +9,7 @@ from Simulations.Section4.results.load_data import load_data
 from Simulations.Section4.results.Plot_1valpha import create_prefix, format_params
 import matplotlib
 
-# 设置全局样式
+
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 12
 sns.set_palette("husl")
@@ -22,18 +22,20 @@ def plot_time_boxplot(target_params):
         return
 
     methods = ['Chisq', 'Plug_in', 'Cond', 'SingleB', 'DoubleB']
-    method_names = [r'LR-$\chi^2$ test', r'Naive Z-test (Alg.2c)', r'Corrected Z-test (Alg.3b)', r'Parametric Bootstrap', r'Double Bootstrap']
+    method_names = [r'LR-$\chi^2$ test (Alg.1)', r'Naive Z-test (Alg.2c)', r'Corrected Z-test (Alg.3b)',
+                    r'Parametric Bootstrap (Alg.4)', r'Double Bootstrap (Alg.5)']
     full_df.columns = method_names
     df_long = full_df.melt(var_name='Method', value_name='Time')
     df_long["Time"] = df_long["Time"] + 1e-3
     print(df_long)
 
     plt.figure(figsize=(16, 9))
+    # sns.set(font_scale=1.2)
     sns.boxplot(x="Method", y="Time", data=df_long, palette="Set2")
-    plt.yscale("log")
-    plt.title(f"$n=100$, $K=1$, $\Gamma=1$", fontsize=14)
-    plt.ylabel("Time in log-scale (s)", fontsize=14)
-    plt.xlabel("Method", fontsize=14)
+    plt.yscale("log")  # Set log scale
+    plt.title(f"Powerlaw, $n=100$, $K=1$, $\Gamma=1$", fontsize=20)
+    plt.ylabel("Time in log-scale (s)", fontsize=20)
+    plt.xlabel("Method", fontsize=16)
     plt.savefig(Path("figure/time_boxplot.pdf"), bbox_inches='tight')
 
 

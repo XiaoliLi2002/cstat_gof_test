@@ -18,8 +18,9 @@ def chi2fun(x,n):
     return pdf
 
 B=2000
-np.random.seed(42)
+seed=42
 iters=1
+Gamma=3.
 strue='powerlaw'
 snull='powerlaw'
 
@@ -30,11 +31,11 @@ palette = ["#F0E442",# Yellow
            "#56B4E9",  # Sky Blue
            "#CC79A7"]  # Reddish Purple
 
-labels = [r'LR-$\chi^2$',
-          r"Kaastra's method",
-          r"Bootstrap-normal",
-          r"High-order",
-          r"Parametric Bootstrap"
+labels = [r'Alg.1: LR-$\chi^2$',
+          r"Alg.2a: Kaastra's method",
+          r"Alg.2b: Bootstrap-normal",
+          r"Alg.2c: High-order",
+          r"Sample of True Null"
 ]
 
 markers = ["s", "o", "v", "x"]
@@ -42,9 +43,10 @@ markers = ["s", "o", "v", "x"]
 alpha=0.8
 
 for l in range(iters):
-    plt.subplot(2, 2, 1)
+    plt.subplot(3, 2, 1)
+    np.random.seed(seed)
     n=10
-    beta=np.array([1.,1.])
+    beta=np.array([1.,Gamma])
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
@@ -91,20 +93,22 @@ for l in range(iters):
     #plt.plot(x, y, color='tomato', label='Alg.3b', marker='v',markevery=100)
 
     plt.hist(C, bins=20, rwidth=0.9, density=True,color=palette[4],label=labels[4],alpha=alpha)
-    #plt.xlabel('C-stat',fontsize=18)
-    plt.ylabel('Density',fontsize=24)
-    plt.xticks([0,5,10,15,20,25],fontsize=18)
+    plt.xlabel(f'$C$ statistics',fontsize=26)
+    plt.ylabel('Density',fontsize=26)
+    plt.yticks(fontsize=22)
+    plt.xticks([0,5,10,15,20],fontsize=22)
     #plt.xticks([60,80,100,120,140,160],fontsize=18)
     #plt.yticks([0.00,0.025,0.050,0.075,0.10,0.125],fontsize=18)
 
     plt.grid(linestyle='--',alpha=0.5)
     plt.legend()
     #plt.show()
-    plt.title(r'Powerlaw, $n=10,K=1$', fontsize=20)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
 
-    plt.subplot(2, 2, 2)
+    plt.subplot(3, 2, 2)
+    np.random.seed(seed)
     n=10
-    beta=np.array([10.,1.])
+    beta=np.array([10.,Gamma])
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
@@ -153,18 +157,21 @@ for l in range(iters):
     plt.hist(C, bins=20, rwidth=0.9, density=True,color=palette[4],label=labels[4], alpha=alpha)
     #plt.xlabel('C-stat', fontsize=18)
     #plt.ylabel('Density', fontsize=18)
-    plt.xticks([0, 5, 10, 15, 20, 25], fontsize=18)
+    plt.yticks(fontsize=22)
+    plt.xticks([0, 5, 10, 15, 20, 25], fontsize=22)
     # plt.xticks([60,80,100,120,140,160],fontsize=18)
     # plt.yticks([0.00,0.025,0.050,0.075,0.10,0.125],fontsize=18)
+    plt.xlabel(r'$C$ statistics', fontsize=26)
 
     plt.grid(linestyle='--', alpha=0.5)
     #plt.legend()
     # plt.show()
-    plt.title(r'Powerlaw, $n=10,K=10$', fontsize=20)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
 
-    plt.subplot(2, 2, 3)
+    plt.subplot(3, 2, 3)
+    np.random.seed(seed)
     n=100
-    beta=np.array([1.,1.])
+    beta=np.array([1.,Gamma])
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
@@ -207,19 +214,21 @@ for l in range(iters):
     #plt.plot(x, y, color='tomato', label='Alg.3b', marker='v',markevery=100)
 
     plt.hist(C, bins=20, rwidth=0.9, density=True,color=palette[4],label=labels[4],alpha=alpha)
-    plt.xlabel(r'$C$ statistics',fontsize=24)
-    plt.ylabel('Density',fontsize=24)
+    plt.xlabel(r'$C$ statistics',fontsize=26)
+    plt.ylabel('Density',fontsize=26)
     #plt.xticks([0, 5, 10, 15, 20, 25], fontsize=18)
-    plt.xticks([60,80,100,120,140,160],fontsize=18)
+    plt.yticks(fontsize=22)
+    plt.xticks([60,80,100,120,140],fontsize=22)
     # plt.yticks([0.00,0.025,0.050,0.075,0.10,0.125],fontsize=18)
 
     plt.grid(linestyle='--', alpha=0.5)
     # plt.show()
-    plt.title(r'Powerlaw, $n=100,K=1$', fontsize=20)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
 
-    plt.subplot(2, 2, 4)
+    plt.subplot(3, 2, 4)
+    np.random.seed(seed)
     n=100
-    beta=np.array([10.,1.])
+    beta=np.array([10.,Gamma])
     X = design_mat(beta,n,snull)
     I = np.asmatrix(np.repeat(1.0,len(beta))).T
     s = generate_s_true(n,beta,strue,snull)
@@ -261,15 +270,49 @@ for l in range(iters):
     #plt.plot(x, y, color='tomato', label='Alg.3b', marker='v',markevery=100)
 
     plt.hist(C, bins=20, rwidth=0.9, density=True,color=palette[4],label=labels[4],alpha=alpha)
-    plt.xlabel(r'$C$ statistics',fontsize=24)
+    plt.xlabel(r'$C$ statistics',fontsize=26)
     #plt.ylabel('Density', fontsize=18)
     #plt.xticks([0, 5, 10, 15, 20, 25], fontsize=18)
-    plt.xticks([60,80,100,120,140,160],fontsize=18)
+    plt.yticks(fontsize=22)
+    plt.xticks([60,80,100,120,140,160],fontsize=22)
     # plt.yticks([0.00,0.025,0.050,0.075,0.10,0.125],fontsize=18)
 
     plt.grid(linestyle='--', alpha=0.5)
     # plt.show()
-    plt.title(r'Powerlaw, $n=100,K=10$', fontsize=20)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
+
+    plt.subplot(3, 2, 5)
+    np.random.seed(seed)
+    n = 100
+    beta = np.array([1., Gamma])
+    s = generate_s_true(n, beta, strue, snull)
+    x=poisson_data(s)
+    energy=np.linspace(1+1/n,2,n)
+    plt.plot(energy,s,color='blue',label='Spectrum',alpha=alpha)
+    plt.scatter(energy,x,color='black',label='Count',alpha=alpha)
+    plt.ylabel('Rate',fontsize=26)
+    plt.xlabel(r'$E_i$',fontsize=26)
+    plt.xticks(fontsize=22)
+    plt.yticks(fontsize=22)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
+    plt.grid(linestyle='--', alpha=0.5)
+    plt.legend()
+
+    plt.subplot(3, 2, 6)
+    np.random.seed(seed)
+    n = 100
+    beta = np.array([10., Gamma])
+    s = generate_s_true(n, beta, strue, snull)
+    x = poisson_data(s)
+    energy = np.linspace(1 + 1 / n, 2, n)
+    plt.plot(energy, s, color='blue', label='Spectrum', alpha=alpha)
+    plt.scatter(energy, x, color='black', label='Count', alpha=alpha)
+    plt.xlabel(r'$E_i$', fontsize=26)
+    plt.xticks(fontsize=22)
+    plt.yticks(fontsize=22)
+    plt.title(f'Powerlaw, $n={n},K={int(beta[0])},\Gamma={int(beta[1])},s_+={round(np.sum(s))}$', fontsize=22)
+    plt.grid(linestyle='--', alpha=0.5)
+
 
     plt.tight_layout()
     plt.savefig('results/figure/Histogram.pdf')
