@@ -55,18 +55,18 @@ for i in range(nBlocks):
 # (a) Plot the counts
 fig,ax=plt.subplots(figsize=(8,6))
 i=0
-plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='black',label='OLD OBS.')
+plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='black',label='2002 OBS.')
 plt.plot(Lambda[i],Model[i],color='black',ls='-')
 i=1
-plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='red',label='NEW OBS.')
+plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='red',label='2018 OBS.')
 plt.plot(Lambda[i],Model[i],color='red',ls='-')
 i=3
-plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='grey',label='BACK OLD OBS.')
+plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='grey',label='BACK 2002 OBS.')
 plt.plot(Lambda[i],Model[i],color='grey',ls='-')
 i=2
-plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='orange',label='BACK NEW OBS.')
+plt.errorbar(Lambda[i],Counts[i],xerr=DeltaLambda[i],yerr=Counts[i]**0.5,ls='',color='orange',label='BACK 2018 OBS.')
 plt.plot(Lambda[i],Model[i],color='orange',ls='-')
-plt.legend(fontsize=12)
+plt.legend(fontsize=15)
 plt.grid()
 plt.xlabel('Wavelength (Ang.)')
 plt.ylabel('Counts')

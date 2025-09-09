@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 path4test='countFormat0-segment-0-20.dat'
 count=np.genfromtxt(path4test,skip_header=0)
 data4test=count[:,1]
+plt.rcParams["font.family"] = "Times New Roman"
+plt.rcParams.update({'font.size': 18})
+plt.rcParams['axes.linewidth'] = 2.0
 
 
 n=len(data4test)
@@ -35,20 +38,21 @@ count=np.genfromtxt(path4figure1,skip_header=0)
 data=count[:,1]
 count=np.genfromtxt(path4figure2,skip_header=0)
 data2=count[:,1]
-ytick=[0,1,np.mean(data),2,np.mean(data2),3,4,5]
+ytick=[0,1,np.mean(data),2,np.mean(data2),3,4,5,6]
+ylabel=['0','0.249','1','1.497','2','3','4','5','6']
 wavelength=[20.0+.0125/2+.0125*i for i in range(n)]
 xerror=0.0125
 fig,ax=plt.subplots(figsize=(8,6))
 #plt.errorbar(wavelength,data,xerr=xerror,yerr=data**0.5,alpha=0.3,color='r',label='NEW OBS SEG1')
-plt.scatter(wavelength,data,color='r',label='NEW OBS SEG1',s=6,marker='+')
+plt.scatter(wavelength,data,color='r',label='2018 OBS SEG1',s=6,marker='+')
 #plt.errorbar(wavelength,data2,xerr=xerror,yerr=data2**0.5,alpha=0.3,color='b',label='BACK NEW OBS SEG1')
-plt.scatter(wavelength,data2,color='b',label='BACK NEW OBS SEG1',s=6,marker='+')
+plt.scatter(wavelength,data2,color='b',label='BACK 2018 OBS SEG1',s=6,marker='+')
 plt.axhline(np.mean(data),alpha=1,color='r',linestyle='-')
 plt.axhline(np.mean(data2),alpha=1,color='b',linestyle='-')
 plt.grid(alpha=0.5)
 plt.xlabel('Wavelength (Ang.)')
 plt.ylabel('Counts')
 plt.xlim((wavelength[0]-xerror,wavelength[n-1]+xerror))
-plt.legend(fontsize=12)
-plt.yticks(ytick)
+plt.legend(fontsize=15)
+plt.yticks(ytick,ylabel)
 plt.savefig('pg1116CountSpectrumSegment1.pdf')
