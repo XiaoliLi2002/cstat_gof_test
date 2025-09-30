@@ -72,8 +72,7 @@ class HEAGOF_class:
         self.thetahat = thetahat
         self.cashstat = cashstat
 
-        if self.thetahat is not None:
-            self.fitted_design_matrix=np.ones_like((Blocklength,len(thetahat)))
+        self.fitted_design_matrix=np.ones_like((Blocklength,len(model.initializer)))
 
     def generate_s(self,theta):
         '''
@@ -132,8 +131,10 @@ def goodness_of_fit(model=HEAGOF_class(),method='theory'):
     elif method=='plug-in':
         model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.uncon_plugin.uncon_plugin_test(model)
     elif method=='theory':
+        model.design_matrix()
         model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.con_theory.con_theory_test(model)
     elif method=='theory_high_order':
+        model.design_matrix()
         model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar = HEAGOF.utilities.con_theory.con_theory_test_high_order(model)
     elif method=='bootstrap':
         model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.bootstrap_empirical.bootstrap_test(model, Cmin=model.cashstat, thetahat=model.thetahat,B=1000)
@@ -175,7 +176,6 @@ if __name__=="__main__":
     myclass=HEAGOF_class(data=mydata,model=mymodel,energy=myenergy,energy_band=myenergy_bandwidth,effective_area=myARE,redistribution_matrix=myRMF,back_strength=0.)
     myclass.fit()
     myclass.cashstat_calculate()
-    myclass.design_matrix()
 
     # p-values given by 4 algorithm:
     goodness_of_fit(model=myclass,method='chi2')
