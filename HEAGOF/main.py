@@ -14,7 +14,7 @@ class model_class:
 
 class HEAGOF_class:
 
-    def __init__(self, data=np.array([]), model=model_class(), energy=np.array([]), energy_band=np.array([]), effective_area=np.array([]), redistribution_matrix=np.eye(0), back_strength=0., thetahat=None, cashstat=None):
+    def __init__(self, data=np.array([]), model=model_class(), energy=np.array([]), energy_band=np.array([]), effective_area=np.array([]), redistribution_matrix=np.eye(0), back_strength=0., thetahat=None, s_fitted=None, cashstat=None):
         '''
         Initialize the HEAGOF object:
             data: observed counts, 1D array of counts, length is Blocklength
@@ -71,6 +71,7 @@ class HEAGOF_class:
 
         self.thetahat = thetahat
         self.cashstat = cashstat
+        self.s_fitted = s_fitted
 
         self.fitted_design_matrix=np.ones_like((Blocklength,len(model.initializer)))
 
