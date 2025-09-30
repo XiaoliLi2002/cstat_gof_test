@@ -38,23 +38,22 @@ In this package, we define two classes `model_class`  and `HEAGOF_class` :
 
                 model: model used to fit the data, a class with label and func
                     example (powerlaw):
-                            class constant_model: # Example: constant model
-                                def constant_func(self,x,mu):
-                                    return mu[0]
+                        class powerlaw_model:
+                            def powerlaw_func(self,x,theta):
+                                return theta[0] * x ** (-theta[1])
 
-                                def __init__(self):
-                                    eps = 1e-5
-                                    self.label='constant'
-                                    self.func=self.constant_func
-                                    self.initializer=np.ones(1)
-                                    self.bound=[[eps, 1/eps]]
+                            def __init__(self):
+                                self.label='powerlaw_model'
+                                self.func=self.powerlaw_func
 
-                energy: energy range, 1D array of increasing positive numbers, length is Blocklength+1
+                energy: energy range, 1D array of positive numbers, length is n_total
 
-                effective_area: Effective area range, 1D array of positive numbers, length is Blocklength
+                energy_band: energy bandwidth, 1D array of positive numbers, length is n_total
+
+                effective_area: Effective area range, 1D array of positive numbers, length is n_total
 
                 redistribution_matrix: Redistribution matrix, 2D matrix of positive numbers
-                with shape Blocklength x Blocklength
+                with shape Blocklength x n_total
 
                 back_strength: Strength of the background, positive float number
 
