@@ -16,8 +16,11 @@ def p_value_chi(model,alpha=0.1):
 
         chi2.isf(alpha,df): one-sided critical value
         chi2.isf(alpha/2,df)-chi2.isf(1-alpha/2,df): two-sided width
+
+        Estimated mean
+        Estimated variance
     """
     x=model.cashstat
     df=len(model.data)-len(model.thetahat)
 
-    return chi2.sf(x,df), 2*min(chi2.sf(x,df),1-chi2.sf(x,df)), chi2.isf(alpha,df), chi2.isf(alpha/2,df)-chi2.isf(1-alpha/2,df)
+    return chi2.sf(x,df), 2*min(chi2.sf(x,df),1-chi2.sf(x,df)), chi2.isf(alpha,df), chi2.isf(alpha/2,df)-chi2.isf(1-alpha/2,df), df, 2*df

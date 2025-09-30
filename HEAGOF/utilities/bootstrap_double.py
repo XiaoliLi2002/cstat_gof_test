@@ -34,4 +34,4 @@ def double_boostrap(model,B1=1000,B2=1000, epsilon=1e-5):
         pvalue_onesided[i], pvalue_twosided[i], leftquantiles, rightquantiles = bootstrap_test(model,Cmin=C[i],thetahat=betahat,B=B2)
     p_onesided = np.mean(C >= Cmin)
     p_twosided = 2 * min(np.mean(C <= Cmin), np.mean(C >= Cmin))
-    return np.mean(pvalue_onesided <= p_onesided), np.mean(pvalue_twosided <= p_twosided)
+    return np.mean(pvalue_onesided <= p_onesided), np.mean(pvalue_twosided <= p_twosided), None, None, None, None

@@ -1,3 +1,5 @@
+import numpy as np
+
 from HEAGOF.utilities.utilities import *
 import HEAGOF.utilities.Wilks_Chi2_test, HEAGOF.utilities.uncon_plugin, HEAGOF.utilities.con_theory
 import HEAGOF.utilities.bootstrap_empirical, HEAGOF.utilities.bootstrap_double
@@ -12,7 +14,7 @@ class model_class:
 
 class HEAGOF_class:
 
-    def __init__(self, data=np.array([]), model=model_class(), energy=np.array([0]), effective_area=np.array([]), redistribution_matrix=np.eye(0), back_strength=0.):
+    def __init__(self, data=np.array([]), model=model_class(), energy=np.array([]), energy_band=np.array([]), effective_area=np.array([]), redistribution_matrix=np.eye(0), back_strength=0., thetahat=None, cashstat=None):
         '''
         Initialize the HEAGOF object:
             data: observed counts, 1D array of counts, length is Blocklength
@@ -27,7 +29,9 @@ class HEAGOF_class:
                                 self.label='powerlaw_model'
                                 self.func=self.powerlaw_func
 
-            energy: energy range, 1D array of increasing positive numbers, length is n_total+1
+            energy: energy range, 1D array of positive numbers, length is n_total
+
+            energy_band: energy bandwidth, 1D array of positive numbers, length is n_total
 
             effective_area: Effective area range, 1D array of positive numbers, length is n_total
 
@@ -42,23 +46,34 @@ class HEAGOF_class:
             raise ValueError('The shape of the redistribution matrix does not match the data!')
         #if n_total!=Blocklength:
         #    raise ValueError('The redistribution matrix is not a square matrix!')
-        if len(energy)!=(Blocklength+1):
-            raise ValueError('The shape of the energy range must be n_total+1 !')
+        if len(energy)!=(n_total):
+            raise ValueError('The shape of the energy range must be n_total !')
         self.data = data
+
+        # initialize
+        if len(energy_band)==0:
+            energy_band=np.ones(n_total)
+        if len(effective_area)==0:
+            energy_band = np.ones(n_total)
+        if redistribution_matrix.size==0:
+            redistribution_matrix=np.eye(len(data))
 
         self.model_label = model.label
         self.model_func = model.func
         self.initializer = model.initializer
         self.bound=model.bound
 
-        self.energy_band = energy[1:]-energy[:Blocklength] #Energy band width
-        self.energy_mid = (energy[:Blocklength]+energy[1:])/2
+        self.energy_band = energy_band
+        self.energy_mid = energy
         self.RMF=redistribution_matrix
         self.ARE=effective_area
         self.back_strength = back_strength
 
-        self.thetahat = None
-        self.cashstat = None
+        self.thetahat = thetahat
+        self.cashstat = cashstat
+
+        if self.thetahat is not None:
+            self.fitted_design_matrix=np.ones_like((Blocklength,len(thetahat)))
 
     def generate_s(self,theta):
         '''
@@ -79,13 +94,13 @@ class HEAGOF_class:
         '''
         Fit the model to get the maximum likelihood estimator
         '''
-        print("Fitting the model...")
+        print("Fitting the model...\n")
         if np.all(np.abs(self.data) < 1e-5):
             raise ValueError("No counts observed!")
         xopt = opt.minimize(self.LLF, self.initializer,args=(self.data),
                             bounds=self.bound)['x']
         self.thetahat = xopt
-        print(f"Fitted value is {self.thetahat}")
+        print(f"Fitted value is {self.thetahat}\n")
 
     def cashstat_calculate(self):
         '''
@@ -95,7 +110,7 @@ class HEAGOF_class:
             self.fit()
         self.s_fitted=self.generate_s(self.thetahat)
         self.cashstat=Cashstat(self.data,self.s_fitted)
-        print(f"Cash statistic: {self.cashstat}")
+        print(f"Cash statistic: {self.cashstat}\n")
 
     def design_matrix(self):
         '''
@@ -109,23 +124,26 @@ class HEAGOF_class:
 
 def goodness_of_fit(model=HEAGOF_class(),method='theory'):
     if model.cashstat is None:
-        raise ValueError("Please run .cashstat_calculate() first!")
+        raise ValueError("Please run .cashstat_calculate() to get Cash statistic first!")
+    if model.thetahat is None:
+        raise ValueError("Please run .fit() to get fitted parameter first!")
     if method=='chi2':
-        model.pvalue=HEAGOF.utilities.Wilks_Chi2_test.p_value_chi(model)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.Wilks_Chi2_test.p_value_chi(model)
     elif method=='plug-in':
-        model.pvalue=HEAGOF.utilities.uncon_plugin.uncon_plugin_test(model)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.uncon_plugin.uncon_plugin_test(model)
     elif method=='theory':
-        model.pvalue=HEAGOF.utilities.con_theory.con_theory_test(model)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.con_theory.con_theory_test(model)
     elif method=='theory_high_order':
-        model.pvalue = HEAGOF.utilities.con_theory.con_theory_test_high_order(model)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar = HEAGOF.utilities.con_theory.con_theory_test_high_order(model)
     elif method=='bootstrap':
-        model.pvalue=HEAGOF.utilities.bootstrap_empirical.bootstrap_test(model, Cmin=model.cashstat, thetahat=model.thetahat,B=1000)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.bootstrap_empirical.bootstrap_test(model, Cmin=model.cashstat, thetahat=model.thetahat,B=1000)
     elif method=='bootstrap_double':
-        model.pvalue=HEAGOF.utilities.bootstrap_double.double_boostrap(model,B1=1000,B2=1000)[0]
+        model.pvalue,_,model.criticalvalue,_,model.estMean,model.estVar=HEAGOF.utilities.bootstrap_double.double_boostrap(model,B1=1000,B2=1000)
     else:
         raise ValueError("Method must be either 'chi2', 'theory', 'plug-in', 'bootstrap' or 'bootstrap_double'")
 
-    print(f"The p-value is: {model.pvalue}")
+    print(f"Method: {method}")
+    print(f"P-value: {model.pvalue}\t Critical Value: {model.criticalvalue}\n Est. Mean: {model.estMean}\t Est. Variance: {model.estVar}\n")
 
 
 if __name__=="__main__":
@@ -142,7 +160,11 @@ if __name__=="__main__":
     # Example: test a powerlaw model for a real powerlaw model when RMF is identity
     myn=1000
     mytheta=np.array([0.1, 1])
-    myenergy=np.linspace(1,2,myn+1)
+
+    myenergy_range=np.linspace(1,2,myn+1)
+    myenergy=(myenergy_range[:-1]+myenergy_range[1:])/2
+    myenergy_bandwidth=myenergy_range[1:]-myenergy_range[:-1]
+
     myARE=np.ones(myn)
     myRMF=np.eye(myn)
     np.random.seed(0)
@@ -150,7 +172,7 @@ if __name__=="__main__":
     mys=generate_s(myn,mytheta,snull='powerlaw')
     mydata=poisson_data(mys)
 
-    myclass=HEAGOF_class(data=mydata,model=mymodel,energy=myenergy,effective_area=myARE,redistribution_matrix=myRMF,back_strength=0.)
+    myclass=HEAGOF_class(data=mydata,model=mymodel,energy=myenergy,energy_band=myenergy_bandwidth,effective_area=myARE,redistribution_matrix=myRMF,back_strength=0.)
     myclass.fit()
     myclass.cashstat_calculate()
     myclass.design_matrix()

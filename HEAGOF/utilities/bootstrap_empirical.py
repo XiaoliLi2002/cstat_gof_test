@@ -1,3 +1,5 @@
+import numpy as np
+
 from HEAGOF.utilities.utilities import *
 
 def bootstrap_test(model, Cmin, thetahat,B=1000, alpha=0.1):
@@ -19,6 +21,9 @@ def bootstrap_test(model, Cmin, thetahat,B=1000, alpha=0.1):
 
             one-sided Critical Value
             two-sided width
+
+            Estimated mean
+            Estimated variance
     """
     C = np.zeros(B)
     s = model.generate_s(thetahat)
@@ -31,4 +36,4 @@ def bootstrap_test(model, Cmin, thetahat,B=1000, alpha=0.1):
         betahat=xopt['x']
         r = model.generate_s(betahat)
         C[i]=Cashstat(x,r)
-    return np.mean(C >= Cmin), 2*min(np.mean(C <= Cmin), np.mean(C >= Cmin)), np.quantile(C,1-alpha), np.quantile(C,1-alpha/2)-np.quantile(C,alpha/2)
+    return np.mean(C >= Cmin), 2*min(np.mean(C <= Cmin), np.mean(C >= Cmin)), np.quantile(C,1-alpha), np.quantile(C,1-alpha/2)-np.quantile(C,alpha/2), np.mean(C), np.var(C)
