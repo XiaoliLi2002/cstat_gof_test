@@ -161,7 +161,7 @@ if __name__=="__main__":
 
     # Example: test a powerlaw model for a real powerlaw model when RMF is identity
     myn=1000
-    mytheta=np.array([0.1, 1])
+    mytheta=np.array([1, 3])
 
     myenergy_range=np.linspace(1,2,myn+1)
     myenergy=(myenergy_range[:-1]+myenergy_range[1:])/2
@@ -174,7 +174,7 @@ if __name__=="__main__":
     mys=generate_s(myn,mytheta,snull='powerlaw')
     mydata=poisson_data(mys)
 
-    myclass=HEAGOF_class(data=mydata,model=mymodel,energy=myenergy,energy_band=myenergy_bandwidth,effective_area=myARE,redistribution_matrix=myRMF,back_strength=0.)
+    myclass=HEAGOF_class(data=mydata,model=mymodel,energy=myenergy,energy_band=myenergy_bandwidth,effective_area=myARE,redistribution_matrix=myRMF,back_strength=np.ones(myn)*0.1)
     myclass.fit()
     myclass.cashstat_calculate()
 
