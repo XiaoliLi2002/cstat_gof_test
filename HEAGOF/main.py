@@ -73,7 +73,7 @@ class HEAGOF_class:
         self.cashstat = cashstat
         self.s_fitted = s_fitted
 
-        self.fitted_design_matrix=np.ones_like((Blocklength,len(model.initializer)))
+        self.fitted_design_matrix=np.ones((Blocklength,len(model.initializer)))
 
     def generate_s(self,theta):
         '''
